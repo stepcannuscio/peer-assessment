@@ -1,0 +1,233 @@
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+  font-family: 'IBM Plex Sans', sans-serif;
+  background-color: #F2F4F4;
+  text-align: left;
+}
+
+.container-fluid {
+  padding: 5%;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 35px;
+}
+
+h2 {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+p {
+  font-size: 15px;
+}
+
+.box {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  -ms-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+  display: inline-block;
+  background-color: white;
+  padding: 2% 20% 2% 1%;
+  margin: 2% 0 4% 0;
+}
+
+.to-do-section .box:hover {
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: #f6f6f6;
+}
+
+.to-do-section h1 {
+  color: #6a68f6;
+}
+
+.missed-section {
+  color: #ed6762;
+
+}
+
+.overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.assessment-popup {
+  position: absolute;
+  top: 10%;
+  z-index: 100;
+  background-color: white;
+  padding: 1.5% ;
+  width: 400px;
+  left: 40%;
+  border-radius: 5px;
+}
+
+.popup-header {
+  font-size: 20px;
+  padding-top: 2%;
+}
+
+.popup-subheader {
+  color: #757575;
+  padding: 4% 0 0 0;
+}
+
+.student {
+  font-weight: 400;
+  font-size: 17px;
+  padding-top: 4%;
+}
+
+@media (max-width: 992px) {
+  .assessment-popup {
+    top: 20%;
+    left: 10%;
+  }
+}
+
+/* Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  -moz-apperance: none;
+  border-radius: 6px;
+  height: 2px;
+  background-image: -webkit-gradient(linear,
+      left top,
+      right top,
+      color-stop(0, #6a68f6),
+      color-stop(0, #c7c6fc));
+  margin: 20px 0 10px 0;
+  width: 100%;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: #6a68f6;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.range-wrap {
+  width: 100%;
+  position: relative;
+}
+
+.range-value {
+  position: absolute;
+  top: -25%;
+}
+
+.range-value span {
+  width: 30px;
+  height: 35px;
+  line-height: 34px;
+  text-align: center;
+  background: #6a68f6;
+  color: #fff;
+  font-size: 12px;
+  display: block;
+  position: absolute;
+  transform: translate(-20%, -40%);
+  border-radius: 40px 40px 50px 50px;
+}
+
+.range-value span:before {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-top: 7px solid #6a68f6;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  margin-top: -1px;
+}
+
+
+.slider-number {
+  display: inline-block;
+  padding: 0 14.5% 0 1%;
+}
+
+
+.slider-last {
+  display: inline-block;
+  padding-left: 1%;
+}
+
+/* Slider */
+input[type="text"] {
+  background-color: transparent;
+  border: none;
+  font-weight: 300;
+  color: black;
+  outline: none;
+  opacity: .7;
+}
+
+hr {
+  margin-top: 2px;
+  border: 1px solid #949494;
+  opacity: .4;
+}
+
+.inner-text {
+  font-size: 12px;
+  color: #6a68f6;
+  position: relative;
+  margin: 0;
+}
+
+.popup-btn {
+  padding-left: 50%;
+}
+
+.cancel-btn {
+  display: inline-block;
+  position: relative;
+  left: 60%;
+  font-size: 14px;
+  color: #6a68f6;
+  font-weight: 300;
+}
+
+.submit-btn {
+  display: inline-block;
+  position: relative;
+  left: 60%;
+  font-size: 14px;
+}

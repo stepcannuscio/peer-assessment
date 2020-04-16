@@ -1,0 +1,115 @@
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+}
+.navbar {
+  margin-top: 70px;
+}
+
+.navbar-toggler {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(0,0,0, 1)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
+}
+
+.nav-item {
+  display: inline-block;
+  position: relative;
+  margin: 0;
+}
+
+.navigation-link {
+ font-size: 16px;
+ color: #313131;
+ text-align: left;
+ margin-left: 30px;
+ font-weight: 400;
+}
+
+.navigation-img {
+position: relative;
+top: 30px;
+}
+
+.vl {
+border-left: 2px solid #d5d6d6;
+height: 100%;
+display: inline-block;
+position: absolute;
+left: 100%;
+top: 8%;
+width: 0px;
+}
+
+@media (max-width: 992px) {
+  .nav-item {
+    top: 0;
+  }
+  .vl {
+    display: none;
+  }
+
+  .main-header {
+    margin: 5%;
+  }
+}
+
+
+.logout-btn {
+  position: absolute;
+  top: 0;
+  right: 40px;
+  margin-top: 20px;
+  border: 1px solid;
+  padding: 5px 10px;
+  border-color: #6C63FF;
+  border-radius: 5px;
+  font-size: 15px;
+  color: #6C63FF;
+}
+
+.logout-btn:hover {
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  background-color: white;
+  text-decoration: none;
+}
+
+
+
+.change-password-btn {
+  position: absolute;
+  top: 0;
+  right: 140px;
+  margin-top: 20px;
+  border: 1px solid;
+  padding: 5px 20px;
+  border-color: #6C63FF;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: #6C63FF;
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.change-password-btn:hover {
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: #4a49ac;
+  text-decoration: none;
+  color: white;
+}
+
+.chg-password-form {
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  padding: 1.5% ;
+  width: 400px;
+  left: 45%;
+  border-radius: 5px;
+}
