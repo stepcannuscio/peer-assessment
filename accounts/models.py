@@ -51,7 +51,7 @@ class MyUserManager(BaseUserManager):
         return self.get(email=email_)
     def make_random_password(self,length = 15,allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'):
         return get_random_string(length,allowed_chars)
-    
+
 
 
 class User(AbstractBaseUser,PermissionsMixin):
@@ -97,7 +97,7 @@ class Course(models.Model):
     section_number = models.PositiveSmallIntegerField()
     year = models.PositiveIntegerField()
     sem_of_realization = models.CharField(max_length = 30)
-  
+
     class Meta:
         constraints = [ # makes sure the combination of code, section_number, year, and sem_of_realization are unique
             models.UniqueConstraint(fields=['code','section_number','year','sem_of_realization'],name = 'unique_course'),
@@ -109,14 +109,18 @@ class Course_Assessment(models.Model):
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='peer_courses')
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="course_assessment")
 
-    
+
 class Peer_Assessment(models.Model):
     name = models.CharField(max_length = 200,default="")
     start_date = models.DateTimeField(default=datetime.min)
     end_date = models.DateTimeField(default = datetime.max)
-    is_completed = models.BooleanField(default = False)
     def add(self,question):
         Question_Assessment(assessment=self,question=question).save()
+
+class Assessment_Completion(models.Model):
+    user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_assessment')
+    assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
+    is_completed = models.BooleanField(default = False)
 
 
 class Question_Assessment(models.Model):
@@ -134,6 +138,3 @@ class Answer(models.Model):
     answer = models.TextField()
     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_answer')
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_answer')
-
-
-
