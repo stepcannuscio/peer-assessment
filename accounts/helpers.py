@@ -1,5 +1,5 @@
 from .models import *
-
+from background_task import background
 
 def get_peer_assessments(request,is_completed):
     current_user = request.user.pk
@@ -22,6 +22,10 @@ def get_dashboard(request,is_completed): #can return all assessments, implement
     for assessment in assessments:
         all_assessments.append(assessment)
     return all_assessments
+# @background(schedule = 60)
+# def generate_results(request):
+#     current_user = request.user.pk
+#     user_assessments = Assessment_Completion.objects.filter(user_id=current_user)
 
 
 
