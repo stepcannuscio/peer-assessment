@@ -1,6 +1,7 @@
-body {
+
+/* body {
   font-family: 'IBM Plex Sans', sans-serif;
-}
+} */
 .navbar {
   margin-top: 70px;
 }
@@ -49,67 +50,4 @@ width: 0px;
   .main-header {
     margin: 5%;
   }
-}
-
-
-.logout-btn {
-  position: absolute;
-  top: 0;
-  right: 40px;
-  margin-top: 20px;
-  border: 1px solid;
-  padding: 5px 10px;
-  border-color: #6C63FF;
-  border-radius: 5px;
-  font-size: 15px;
-  color: #6C63FF;
-}
-
-.logout-btn:hover {
-  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
-  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
-  -ms-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
-  -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
-  background-color: white;
-  text-decoration: none;
-}
-
-
-
-.change-password-btn {
-  position: absolute;
-  top: 0;
-  right: 140px;
-  margin-top: 20px;
-  border: 1px solid;
-  padding: 5px 20px;
-  border-color: #6C63FF;
-  border-radius: 5px;
-  font-size: 15px;
-  background-color: #6C63FF;
-  color: white;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.change-password-btn:hover {
-  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-  background-color: #4a49ac;
-  text-decoration: none;
-  color: white;
-}
-
-.chg-password-form {
-  position: absolute;
-  z-index: 100;
-  background-color: white;
-  padding: 1.5% ;
-  width: 400px;
-  left: 45%;
-  border-radius: 5px;
 }

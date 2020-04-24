@@ -1,0 +1,112 @@
+/* Login Pages */
+.background-img {
+  width: 70%;
+  position: relative;
+  left: 5%;
+}
+
+.login-box {
+  position: absolute;
+  width: 400px;
+  right: 5%;
+  background-color: white;
+  display: inline-block;
+  text-align: center;
+}
+
+.lock-icon {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  top: 4px;
+}
+
+.login-input {
+  display: inline-block;
+  width: 80%;
+  padding: 15px;
+  border-radius: 5px;
+  border-style: solid;
+  border-color: lightgrey;
+  border-width: 1px;
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+.login-input:focus {
+  border-color: #040a7b;
+}
+
+.back-btn {
+  background-color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-color: #6a68f6;
+  color: #6a68f6;
+  width: 80%;
+  margin-top: 15px;
+  margin-bottom: 250px;
+}
+
+.back-btn:hover {
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  background-color: white;
+}
+
+.login-btn {
+  margin: 30px 0 0 0;
+  width: 88%;
+}
+
+span {
+  top: 40px;
+  position: relative;
+  line-height: 80px;
+  padding: 8px;
+  -moz-border-radius: 100px;
+  /* or 50% */
+  border-radius: 100px;
+  /* or 50% */
+  background-color: #6a68f6;
+  color: white;
+  text-align: center;
+  font-size: 17px;
+}
+
+@media (max-width: 992px) {
+  .login-box {
+    width: 50%;
+  }
+
+  .background-img {
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-box {
+    position: relative;
+    width: 90%;
+    right: 1%;
+  }
+
+  .background-img {
+    width: 100%;
+  }
+
+  .back-btn {
+    margin-bottom: 40%;
+  }
+
+  body {
+    text-align: center;
+  }
+
+  .login-btn {
+    width: 90%;
+  }
+}
