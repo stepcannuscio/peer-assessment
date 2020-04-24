@@ -12,8 +12,9 @@
 
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <link rel="stylesheet" href="{% static 'backend/peer-assessments.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
   <link rel="stylesheet" href="{% static 'backend/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/peer-assessments.css' %}">
 
   <!-- Font Awesome -->
   <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js"></script>
@@ -28,14 +29,12 @@
   <div class="overlay"></div>
   <div class="row">
     <div class="col-lg-2">
+      <!-- Nav Bar -->
       <nav class="navbar navbar-expand-lg">
-
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggler" aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarToggler">
-
-          <!-- Nav Bar -->
           <ul class="navbar-nav fixed flex-column">
             <li class="nav-item">
               <i class="fas fa-tachometer-alt navigation-img"></i>
@@ -43,7 +42,7 @@
             </li>
             <li class="nav-item">
               <i class="far fa-chart-bar navigation-img"></i>
-              <a class="nav-link navigation-link" href="#">Peer Assessments</a>
+              <a class="nav-link navigation-link" href="">Peer Assessments</a>
             </li>
             <li class="nav-item">
               <i class="fas fa-layer-group navigation-img"></i>
@@ -53,6 +52,7 @@
           <div class="vl"></div>
         </div>
       </nav>
+
     </div>
     <div class="col-lg-10">
       <div class="container-fluid">
@@ -74,12 +74,12 @@
         </div>
       </div>
     </div>
-    <a class="change-password-btn" href="">CHANGE PASSWORD</a>
-    <a class="logout-btn" href="student-login.html">LOGOUT</a>
+    <a class="change-password-btn" href="{% url 'change-password' %}">CHANGE PASSWORD</a>
+		<a class="logout-btn" href="{% url 'log_out' %}">LOGOUT</a>
   </div>
 
 
-  <div class="assessment-popup">
+  <div class="assessment-popup popup">
     <h3 class="popup-header">Delivery 6 Assessment</h3>
     <p class="popup-subheader">Please fill out the peer assesment for each of your teammates</p>
 
@@ -87,7 +87,6 @@
     <div class="student-assessment">
       <h4 class="student"><strong></strong> Score. (0=Lowest / 5=Best)</h4>
       <div class="range-wrap">
-        <!-- <div class="range-value" id="rangeV"></div> -->
         <input id="slider" type="range" min="0" max="5" step="1" value="0">
         <div class="slider-numbers">
           <p class="slider-number">0</p>
@@ -111,53 +110,51 @@
 
 
   <script type="text/javascript">
-
-  $(".assessment-popup").hide();
-  $(".inner-text").hide();
-
-  $(".to-do-box").click(function() {
-    $(".overlay").show();
-    $(".assessment-popup").show();
-    loadStudents($(this));
-  })
-
-  $(".submit-btn").on("click", function() {
-    // Submit form
-    $(".overlay").hide();
     $(".assessment-popup").hide();
+    $(".inner-text").hide();
 
-  })
-  $(".cancel-btn").on("click", function() {
-    // Submit form
-    $(".overlay").hide();
-    $(".assessment-popup").hide();
+    $(".to-do-box").click(function() {
+      $(".overlay").show();
+      $(".assessment-popup").show();
+      loadStudents($(this));
+    })
 
-  })
+    $(".submit-btn").on("click", function() {
+      // Submit form
+      $(".overlay").hide();
+      $(".assessment-popup").hide();
+
+    })
+    $(".cancel-btn").on("click", function() {
+      // Submit form
+      $(".overlay").hide();
+      $(".assessment-popup").hide();
+
+    })
 
 
     function loadStudents(assessmentBox) {
       // Load students for this assessment from database - use Django
       var names = ["Pete", "Carter", "Jonathan"]
       var scores = ["0", "0", "0"]
-      var studentAssessment = $( ".student-assessment" );
+      var studentAssessment = $(".student-assessment");
       console.log(studentAssessment.length)
-      for (i=0; i<names.length; i++) {
+      for (i = 0; i < names.length; i++) {
         var newAssessment = studentAssessment.clone()
         newAssessment.find(".student strong").text(names[i] + "'s'");
         newAssessment.find(".inner-text").text("Comment on " + names[i]);
-        newAssessment.find(".comment-input").attr("placeholder","Comment on " + names[i]);
-        newAssessment.insertBefore( ".cancel-btn" );
+        newAssessment.find(".comment-input").attr("placeholder", "Comment on " + names[i]);
+        newAssessment.insertBefore(".cancel-btn");
       }
       studentAssessment.hide();
-  }
+    }
 
 
-    $(document).on("click", function(event){
-      if(!$(event.target).closest(".comment-input").length){
+    $(document).on("click", function(event) {
+      if (!$(event.target).closest(".comment-input").length) {
 
       }
     })
-
   </script>
 </body>
 

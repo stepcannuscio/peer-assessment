@@ -1,0 +1,72 @@
+.container-fluid {
+  padding: 5% 5% 0 5%;
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 500;
+  color: #6a68f6;
+}
+
+h3 {
+  font-size: 15px;
+  font-weight: 400;
+  display: inline;
+}
+
+p {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.box {
+  padding: 5% 25% 5% 5%;
+  border-radius: 5px;
+  pointer-events: none;
+}
+
+/* Create Assessment Popup */
+.content {
+  padding: 1%;
+}
+
+.cancel-btn {
+  left: 0;
+  padding-left: 0;
+}
+
+.submit-btn {
+  left: 0;
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+input[type="text"] {
+  margin: 3% 0;
+}
+
+select {
+  margin: 3% 0;
+}
+
+@media (max-width: 845px) {
+  body {
+    text-align: center;
+  }
+
+  .box {
+    text-align: left;
+  }
+
+  #create-team, #create-student {
+    left: 30%;
+  }
+}

@@ -1,0 +1,36 @@
+.row {
+  margin-bottom: 30px;
+}
+
+.box {
+  padding: 5% 0% 5% 3%;
+  width: 100%;
+  border-radius: 5px;
+  margin-bottom: 30px;
+}
+
+.container-fluid {
+  padding: 5%;
+}
+
+.main-header {
+  font-weight: 400;
+  font-size: 35px;
+  color: #6fd691;
+  text-align: left;
+}
+
+.assessment-name {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+.overall, .note, .due-date {
+  font-size: 18px;
+  font-weight: 400;
+  display: inline;
+}
+
+strong {
+  font-size: 18px;
+}

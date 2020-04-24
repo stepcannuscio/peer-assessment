@@ -1,0 +1,268 @@
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  font-family: 'IBM Plex Sans', sans-serif;
+  background-color: #F2F4F4;
+  min-width: 100%;
+  height: 100%;
+}
+
+h1 {
+
+  font-weight: 500;
+  font-size: 35px;
+
+}
+
+h2 {
+  font-weight: 400;
+  font-size: 25px;
+
+}
+
+.border-shadow {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  -ms-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+}
+
+.next-btn {
+
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  height: 2px;
+  line-height: 3px;
+  color: white;
+  width: 275px;
+  font-size: 12px;
+  font-weight: 300;
+  padding: 15px;
+  background-color: #6a68f6;
+  border-color: #6a68f6;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+}
+
+.next-btn:hover {
+
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: #4a49ac;
+}
+
+.box {
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -moz-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -ms-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -o-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  -webkit-transition: all 0.25s ease-in-out;
+  -moz-transition: all 0.25s ease-in-out;
+  -ms-transition: all 0.25s ease-in-out;
+  -o-transition: all 0.25s ease-in-out;
+  transition: all 0.25s ease-in-out;
+  display: inline-block;
+  background-color: white;
+  padding: 2% 20% 2% 1%;
+  margin: 2% 0 4% 0;
+}
+
+.box:hover {
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: #f6f6f6;
+}
+
+.logout-btn {
+  position: absolute;
+  top: 0;
+  right: 40px;
+  margin-top: 20px;
+  border: 1px solid;
+  padding: 5px 10px;
+  border-color: #6C63FF;
+  border-radius: 5px;
+  font-size: 15px;
+  color: #6C63FF;
+}
+
+.logout-btn:hover {
+  -webkit-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.19), 0 3px 3px rgba(0, 0, 0, 0.23);
+  background-color: white;
+  text-decoration: none;
+}
+
+
+.change-password-btn {
+  position: absolute;
+  top: 0;
+  right: 140px;
+  margin-top: 20px;
+  border: 1px solid;
+  padding: 5px 20px;
+  border-color: #6C63FF;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: #6C63FF;
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.change-password-btn:hover {
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: #4a49ac;
+  text-decoration: none;
+  color: white;
+}
+
+.chg-password-form {
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  padding: 1.5% ;
+  width: 400px;
+  left: 45%;
+  border-radius: 5px;
+}
+
+
+/* Popup Buttons */
+.cancel-btn {
+  display: inline-block;
+  position: relative;
+  left: 60%;
+  font-size: 14px;
+  color: #6a68f6;
+  font-weight: 300;
+}
+
+.submit-btn {
+  display: inline-block;
+  position: relative;
+  left: 60%;
+  font-size: 14px;
+}
+
+input[type="text"] {
+  background-color: transparent;
+  color: #949494;
+  outline: none;
+  outline-style: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid #949494 1px;
+  margin-bottom: 3%;
+  width: 100%;
+
+}
+
+input[type="datetime-local"] {
+  background-color: transparent;
+  color: #949494;
+  outline: none;
+  outline-style: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  border-bottom: solid #949494 1px;
+  margin-bottom: 3%;
+  width: 70%;
+}
+
+.message-box{
+  background-color: black;
+  border-radius: 4px;
+  position: absolute;
+  right: 25px;
+  top: 100px;
+  padding: 6px 20px 6px 20px;
+  z-index: 1000;
+  opacity: 80%;
+  font-weight: 400;
+}
+
+.message {
+  font-size: 13px;
+  color: white;
+  z-index: 1000;
+}
+
+.overlay {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.popup {
+  position: absolute;
+  top: 10%;
+  z-index: 100;
+  background-color: white;
+  padding: 1.5% ;
+  width: 400px;
+  left: 40%;
+  border-radius: 5px;
+}
+
+
+@media (max-width: 992px) {
+  .popup {
+    top: 20%;
+    left: 10%;
+  }
+}
+
+.create-button {
+  background-color: inherit;
+  border-color: #6a68f6;
+  color: #6a68f6;
+  font-size: 13px;
+  font-weight: 300;
+  position: relative;
+  left: 80%;
+}
+
+.create-button:hover {
+  background-color: #ebebf2;
+  color: #6158ff;
+  border-color: #6158ff;
+}

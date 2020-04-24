@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Student Completed Assessments</title>
+  <title>Completed Assessments</title>
   {% load static %}
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
@@ -11,8 +11,9 @@
   <!-- CSS Stylesheets -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-  <link rel="stylesheet" href="{% static 'backend/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
   <link rel="stylesheet" href="{% static 'backend/navbar.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/completed-assessments.css' %}">
 
 
   <!-- Font Awesome -->
@@ -50,7 +51,7 @@
             </li>
             <li class="nav-item">
               <i class="fas fa-layer-group navigation-img"></i>
-              <a class="nav-link navigation-link" href="#">Completed</a>
+              <a class="nav-link navigation-link" href="">Completed</a>
             </li>
           </ul>
           <div class="vl"></div>
@@ -61,30 +62,27 @@
     <div class="col-lg-10 col-md-12">
       <div class="container-fluid">
         <h1 class="main-header">Completed</h1>
-
-          <div id="assessment-section" class="row justify-content-start">
-            <div class="assessment">
-              <div class="col-lg-6 col-md-6">
-                <div class="dashboard-box border-shadow">
-                  <h2 class="assessment-name"></h2>
-                  <strong>Due Date:</strong><h3 class="due-date"></h3>
-                  <strong>Overall:</strong><h4 class="overall"></h4>
-                  <strong>Note:</strong><h4 class="note"></h4>
-                </div>
-              </div>
+        <div id="assessment-section" class="row justify-content-start">
+          <div class="col-lg-6 col-md-6">
+            <div class="box border-shadow">
+              <h2 class="assessment-name"></h2>
+              <strong>Due Date:</strong>
+              <h3 class="due-date"></h3><br>
+              <strong>Overall:</strong>
+              <h3 class="overall">
+                </h4><br>
+                <strong>Note:</strong>
+                <h3 class="note">
+                  </h4><br>
             </div>
-
-            </div>
-
-
           </div>
-
-
-
+        </div>
       </div>
-      <a class="change-password-btn" href="">CHANGE PASSWORD</a>
-      <a class="logout-btn" href="student-login.html">LOGOUT</a>
     </div>
+  </div>
+  <a class="change-password-btn" href="{% url 'change-password' %}">CHANGE PASSWORD</a>
+  <a class="logout-btn" href="{% url 'log_out' %}">LOGOUT</a>
+  </div>
 
 
 
@@ -93,9 +91,7 @@
 
 
 
-<script type="text/javascript">
-
-
+  <script type="text/javascript">
     function loadAssessments() {
       // Load students for this assessment from database - use Django
       var deliveryNames = ["Delivery 1", "Delivery 2", "Delivery 3", "Delivery 4"];
@@ -103,22 +99,21 @@
       var overalls = ["1", "2", "3", "4"];
       var notes = ["Hi", "Hey", "High", "Hay"];
 
-      var assessment = $( ".assessment" );
+      var assessment = $(".col-lg-6");
 
-      for (i=0; i<deliveryNames.length; i++) {
+      for (i = 0; i < deliveryNames.length; i++) {
         console.log('asdf')
         var newAssessment = assessment.clone()
         newAssessment.find(".assessment-name").text(deliveryNames[i] + " Assessments");
-        newAssessment.find(".due-date").text(dueDates[i]);
-        newAssessment.find(".overall").text(overalls[i]+"/5");
-        newAssessment.find(".note").text(notes[i]);
+        newAssessment.find(".due-date").text(" " + dueDates[i]);
+        newAssessment.find(".overall").text(" " + overalls[i] + "/5");
+        newAssessment.find(".note").text(" " + notes[i]);
         $("#assessment-section").append(newAssessment);
       }
       assessment.hide();
-  }
-  loadAssessments()
-  
-</script>
+    }
+    loadAssessments()
+  </script>
 
 </body>
 
