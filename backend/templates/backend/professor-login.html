@@ -1,32 +1,37 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Login</title>
-    {% load static %}
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'backend/styles.css' %}">
 
-  </head>
-  <body>
-    {% for message in messages %}
-      <div class="error-box">
-        <h1 class="error-message">{{ message }}</h1>
-      </div>
+<head>
+  <meta charset="utf-8">
+  <title>Login</title>
+  {% load static %}
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
 
-    {% endfor %}
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/login.css' %}">
 
-    <img class="background-img" src="{% static "backend/images/professorLogin.svg" %}" alt="professor-img">
-    <div class="login-box border-shadow">
-      <span><img class="lock-icon" src="{% static "backend/images/lock.png" %}" alt="lock-icon"></span>
-      <h2>Professor Login</h2>
-      <form action="{% url 'log_in' %}" method="post">
-        {% csrf_token %}
-        <input class="login-input" type="text" name="email" placeholder="Email">
-        <input class="login-input" type="password" name="password" placeholder="Password">
-        <input class="next-btn login-btn" type="submit" value="LOGIN">
-      </form>
-      <a class="next-btn back-btn" href="/">BACK</a>
-    </div>
-  </body>
+</head>
+
+<body>
+  {% for message in messages %}
+  <div class="message-box">
+    <h1 class="message">{{ message }}</h1>
+  </div>
+
+  {% endfor %}
+
+  <img class="background-img" src="{% static "backend/images/professorLogin.svg" %}" alt="professor-img">
+  <div class="login-box border-shadow">
+    <span><img class="lock-icon" src="{% static "backend/images/lock.png" %}" alt="lock-icon"></span>
+    <h2>Professor Login</h2>
+    <form action="{% url 'log_in' %}" method="post">
+      {% csrf_token %}
+      <input class="login-input" type="email" name="email" placeholder="Email">
+      <input class="login-input" type="password" name="password" placeholder="Password">
+      <input class="next-btn login-btn" type="submit" value="LOGIN">
+    </form>
+    <a class="next-btn back-btn" href="/">BACK</a>
+  </div>
+</body>
+
 </html>

@@ -1,48 +1,79 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-  <head>
-    <meta charset="utf-8">
-    <title>Landing Page</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'backend/styles.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
-  </head>
-  <body>
-    <div class="top-container">
-      <h1>Welcome,</h1>
-      <h2>Are you a...</h2>
-    </div>
-    <div class="middle-container">
-      <div class="professor-box box border-shadow" tabindex="1">
+
+<head>
+  <meta charset="utf-8">
+  <title>Landing Page</title>
+  {% load static %}
+
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/index.css' %}">
+
+  <!-- Bootstrap Scripts -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+  <div class="top-container">
+    <h1>Welcome,</h1>
+    <h2>Are you a...</h2>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-6">
+      <div id="professor-box" class="box border-shadow" tabindex="1">
         <img class="box-img" src="{% static "backend/images/professor.svg" %}" alt="professor-img">
-        <h2 class="professor-header">Professor</h2>
-        <p class="professor-subheader">Click here</p>
-      </div>
-      <div class="student-box box border-shadow" tabindex="2">
-        <img class="box-img student-img" src="{% static "backend/images/student.svg" %}" alt="student-img">
-        <h2 class="student-header">Student</h2>
-        <p class="student-subheader">Click here</p>
+        <div class="text">
+          <h2 class="header">Professor</h2>
+          <p class="subheader">Click here</p>
+        </div>
+
       </div>
     </div>
-      <div class="bottom-container">
-        <button disabled="true" class="next-btn border-shadow" >NEXT</button>
+    <div class="col-lg-6 col-md-6">
+      <div id="student-box" class="box border-shadow" tabindex="2">
+        <img class="box-img student-img" src="{% static "backend/images/student.svg" %}" alt="student-img">
+        <div class="text">
+          <h2 class="header">Student</h2>
+          <p class="subheader">Click here</p>
+        </div>
       </div>
+    </div>
+
+  </div>
+
+  <div class="bottom-container">
+    <button class="next-btn border-shadow">NEXT</button>
+  </div>
 
 
   <script>
     let destination = '';
-    const studentBox = document.querySelector('.student-box');
-    const professorBox = document.querySelector('.professor-box');
+    const studentBox = document.querySelector('#student-box');
+    const professorBox = document.querySelector('#professor-box');
     const nextButton = document.querySelector('.next-btn')
+
+    nextButton.classList.add("disabled");
 
     studentBox.addEventListener('click', () => {
       console.log('student focus')
+      nextButton.classList.remove("disabled");
       nextButton.disabled = false;
       destination = 'student-login';
     });
 
     professorBox.addEventListener('click', () => {
       console.log('professor focus')
+      nextButton.classList.remove("disabled");
       nextButton.disabled = false;
       destination = 'professor-login';
     });
@@ -51,9 +82,8 @@
       console.log('next button clicked', destination)
       document.location.href = destination
     });
-
-
   </script>
 
-  </body>
+</body>
+
 </html>

@@ -1,0 +1,75 @@
+.container-fluid {
+  padding: 5% 5% 0 5%;
+}
+
+h1 {
+  font-weight: 300;
+  font-size: 30px;
+  color: #6a68f6;
+}
+
+h2 {
+  font-size: 25px;
+  font-weight: 500;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 400;
+}
+
+p {
+  font-size: 15px;
+  margin-bottom: 0;
+}
+
+.box {
+  padding: 5% 25% 5% 5%;
+  border-radius: 5px;
+}
+
+.all-box {
+  pointer-events: none;
+}
+
+/* Create Assessment Popup */
+.content {
+  padding: 1%;
+}
+
+.popup-subheader {
+  margin: 5% 0;
+  color: #757575;
+}
+
+.cancel-btn {
+  left: 0;
+  padding-left: 0;
+}
+
+.submit-btn {
+  left: 0;
+}
+
+h4 {
+  font-size: 12px;
+  font-weight: 300;
+}
+
+input[type="text"] {
+  margin-bottom: 5%;
+}
+
+@media (max-width: 845px) {
+  body {
+    text-align: center;
+  }
+
+  .box {
+    text-align: left;
+  }
+
+  #create-assessment {
+    left: 30%;
+  }
+}
