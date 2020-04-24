@@ -3,6 +3,8 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, Pass
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from .helpers import *
+
 
 # AUTH #
 def log_in(request):
@@ -33,6 +35,7 @@ def log_in(request):
         elif request.META['HTTP_REFERER'].endswith('student-login') and user.is_staff != True:
             login(request, user)
             print('logged in')
+            #get_peer_assessments(request,is_completed=False)
             return redirect('/student-home')
 
         else:
@@ -83,3 +86,4 @@ def change_password(request):
     return render(request, 'accounts/change-password.html', {
         'form': form
     })
+

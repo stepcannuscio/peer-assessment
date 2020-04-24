@@ -114,6 +114,7 @@ class Peer_Assessment(models.Model):
     name = models.CharField(max_length = 200,default="")
     start_date = models.DateTimeField(default=datetime.min)
     end_date = models.DateTimeField(default = datetime.max)
+    is_published = models.BooleanField(default=False)
     def add(self,question):
         Question_Assessment(assessment=self,question=question).save()
 
@@ -121,6 +122,9 @@ class Assessment_Completion(models.Model):
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_assessment')
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
+    is_graded = models.BooleanField(default=False)
+    grade = models.PositiveIntegerField()
+    comment = models.TextField()
 
 
 class Question_Assessment(models.Model):
