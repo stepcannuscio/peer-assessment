@@ -26,6 +26,14 @@
 </head>
 
 <body>
+
+  {% for message in messages %}
+  <div class="message-box">
+    <h1 class="message">{{ message }}</h1>
+  </div>
+
+  {% endfor %}
+
   <div class="overlay"></div>
   <div class="row">
     <div class="col-lg-2">
@@ -40,11 +48,11 @@
           <ul class="navbar-nav fixed flex-column">
             <li class="nav-item">
               <i class="fas fa-tachometer-alt navigation-img"></i>
-              <a class="nav-link navigation-link" href="{% url 'professor-home' %}">Home</a>
+              <a class="nav-link navigation-link" href="{% url 'professor-home' course.id %}">Home</a>
             </li>
             <li class="nav-item">
               <i class="far fa-chart-bar navigation-img"></i>
-              <a class="nav-link navigation-link" href="{% url 'all-assessments' %}">All Assessments</a>
+              <a class="nav-link navigation-link" href="{% url 'all-assessments' course.id %}">All Assessments</a>
             </li>
             <li class="nav-item">
               <i class="fas fa-layer-group navigation-img"></i>
@@ -61,34 +69,25 @@
           <h1>Teams</h1>
           <button type="button" id="create-team" class="btn btn-light create-button">NEW <br/>TEAM</button>
           <div class="row">
+            {% for team in teams %}
             <div class="col-lg-6 col-md-6">
               <div class="team-box box">
-                <h2 class="team-name">Nickelodeon Political Superpacks</h2>
-                <strong>Members: </strong><h3 class="members">Ted Cruz | Bernie Sanders | Drake Bell |</h3>
+                <h2 class="team-name">{{team.name}}</h2>
+                <strong>Members: </strong><h3 class="members">
+                  {% for stud in students_on_teams %}
+                  {% for student in all_students %}
+
+                  {%if stud.team_id == team.id and stud.is_active == True and stud.user_id == student.id  %}
+
+                  <h3>{{student.name}} | </h3>
+                  {% endif%}
+
+                {% endfor %}
+                {% endfor %}<br>
                 <strong>Overall Grade: </strong><h3 class="overall-grade">4.3/5</h3>
               </div>
             </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="team-box box">
-                <h2 class="team-name">Nickelodeon Political Superpacks</h2>
-                <strong>Members: </strong><h3 class="members">Ted Cruz | Bernie Sanders | Drake Bell |</h3>
-                <strong>Overall Grade: </strong><h3 class="overall-grade">4.3/5</h3>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="team-box box">
-                <h2 class="team-name">Nickelodeon Political Superpacks</h2>
-                <strong>Members: </strong><h3 class="members">Ted Cruz | Bernie Sanders | Drake Bell |</h3>
-                <strong>Overall Grade: </strong><h3 class="overall-grade">4.3/5</h3>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="team-box box">
-                <h2 class="team-name">Nickelodeon Political Superpacks</h2>
-                <strong>Members: </strong><h3 class="members">Ted Cruz | Bernie Sanders | Drake Bell |</h3>
-                <strong>Overall Grade: </strong><h3 class="overall-grade">4.3/5</h3>
-              </div>
-            </div>
+              {% endfor %}
           </div>
         </div>
         </div>
@@ -97,33 +96,27 @@
           <div id="students-section">
             <h1>Students</h1>
 
-            <button type="button" id="create-student" class="btn btn-light create-button">NEW <br/>STUDENT</button>
+            <button type="button" id="create-student" class="btn btn-light create-button">ASSIGN <br/>STUDENT</button>
 
             <div class="row">
+              {% for student in all_students %}
+
               <div class="col-lg-4 col-md-6">
                 <div class="student-box box">
-                  <h2 class="student-name">Ted Cruz</h2>
-                  <strong>Team: </strong><h3 class="team">Nickelodeon Political Super Packs</h3>
+                  <h2 class="student-name">{{student.name}} {{student.surname}}</h2>
+                  {% for team in teams %}
+                  {% for stud in students_on_teams %}
+                  {% if stud.team_id == team.id and stud.is_active == True and stud.user_id == student.id %}
+                    <strong>Team: </strong><h3 class="team">{{team.name}}</h3>
+                  {% endif %}
+
+                  {% endfor %}
+                  {% endfor %}
+                  <br>
                   <strong>Overall Grade: </strong><h3 class="overall-grade">3.5/5</h3>
                 </div>
               </div>
-              <div class="col-lg-4 col-md-6">
-                <div class="student-box box">
-                  <h2 class="student-name">Bernie Sanders</h2>
-                  <strong>Team: </strong><h3 class="team">Nickelodeon Political Super Packs</h3>
-                  <strong>Overall Grade: </strong><h3 class="overall-grade">4.5/5</h3>
-                </div>
-              </div>
-              <div class="col-lg-4 col-md-6">
-                <div class="student-box box">
-                  <h2 class="student-name">Drake Bell</h2>
-                  <strong>Team: </strong><h3 class="team">Nickelodeon Political Super Packs</h3>
-                  <strong>Overall Grade: </strong><h3 class="overall-grade">5/5</h3>
-                </div>
-              </div>
-
-
-
+              {% endfor %}
         </div>
       </div>
 
@@ -139,25 +132,30 @@
     <div class="create-team-popup popup">
       <div class="content">
         <h3 class="popup-header">Create a new Team</h3>
-        <form method="post">
+        <form action="{% url 'create-team' course.id %}" method="post">
           {% csrf_token %}
-          <input type="text" name="team-name" placeholder="Team Name">
+
+          <input type="text" name="name" placeholder="Team Name">
           <input id="cancel-team" class="cancel-btn btn btn-link" type="button" value="CANCEL">
           <input id="submit-team" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
-        </form>
+      </form>
       </div>
   </div>
   <div class="create-student-popup popup">
     <div class="content">
-      <h3 class="popup-header">Create a new Student</h3>
-      <form method="post">
+      <h3 class="popup-header">Assign student to a team</h3>
+      <form action="{% url 'add-student' course.id %}" method="post">
         {% csrf_token %}
-        <input type="text" name="student-name" placeholder="Student Name">
-        <select id="teams" name="teams">
-         <option value="team1">Team1</option>
-         <option value="team2">Team2</option>
-         <option value="team3">Team3</option>
-         <option value="team4">Team4</option>
+        <select id="users" name="user">
+        {% for student in all_students %}
+         <option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
+         {% endfor %}
+         </select><br>
+        <!-- <input type="text" name="user" placeholder="Student Name"> -->
+        <select id="teams" name="team">
+        {% for team in teams %}
+         <option value="{{ team.id }}">{{team.name}}</option>
+         {% endfor %}
        </select><br>
         <input id="cancel-student" class="cancel-btn btn btn-link" type="button" value="CANCEL">
         <input id="submit-student" class="submit-btn btn btn-link" type="submit" value="SUBMIT">

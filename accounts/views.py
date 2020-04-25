@@ -29,14 +29,14 @@ def log_in(request):
         elif request.META['HTTP_REFERER'].endswith('professor-login') and user.is_staff == True:
             login(request, user)
             print('logged in')
-            return redirect('/professor-home')
+            return redirect('/courses')
 
         # Student logs in from correct page
         elif request.META['HTTP_REFERER'].endswith('student-login') and user.is_staff != True:
             login(request, user)
             print('logged in')
             #get_peer_assessments(request,is_completed=False)
-            return redirect('/student-home')
+            return redirect('/courses')
 
         else:
             messages.error(request, 'Wrong Credentials')
@@ -86,4 +86,3 @@ def change_password(request):
     return render(request, 'accounts/change-password.html', {
         'form': form
     })
-
