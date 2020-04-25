@@ -149,7 +149,11 @@ class Assessment_Completion(models.Model):
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
     is_graded = models.BooleanField(default=False)
+<<<<<<< HEAD
+    grade = models.PositiveIntegerField(default = 0)
+=======
     grade = models.PositiveIntegerField(default=0)
+>>>>>>> 13d474a9df13faf08dfe4f26e78b4150c11f090f
     comment = models.TextField(default="")
 
 
