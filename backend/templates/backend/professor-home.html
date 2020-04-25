@@ -52,11 +52,11 @@
 						</li>
 						<li class="nav-item">
 							<i class="far fa-chart-bar navigation-img"></i>
-							<a class="nav-link navigation-link" href="{% url 'all-assessments' %}">All Assessments</a>
+							<a class="nav-link navigation-link" href="{% url 'all-assessments' course.id %}">All Assessments</a>
 						</li>
 						<li class="nav-item">
 							<i class="fas fa-layer-group navigation-img"></i>
-							<a class="nav-link navigation-link" href="">Teams & Students</a>
+							<a class="nav-link navigation-link" href="{% url 'teams-students' course.id %}">Teams & Students</a>
 						</li>
 					</ul>
 					<div class="vl"></div>
@@ -66,10 +66,10 @@
 		</div>
 		<div class="col-lg-10 col-md-12">
 			<div class="container-fluid">
-				<h1 class="main-header">Welcome {{ user.name }}!</h1>
+				<h1 class="main-header">{{ course.name }}</h1>
 
 				<div class="row justify-content-start">
-					<div class="col-lg-4 col-md-6">
+					<div class="col-lg-6 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-check-circle fa-2x grid-icon-1 grid-icon"></i>
 							<h3 class="grid-number total-assessments-completed">4</h3>
@@ -77,41 +77,28 @@
 						</div>
 
 					</div>
-					<div class="col-lg-4 col-md-6">
+					<div class="col-lg-6 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-list-ul fa-2x grid-icon-2 grid-icon"></i>
 							<h3 class="grid-number total-assessments">6</h3>
 							<p class="grid-text">Total Assessments</p>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-6">
+					<div class="col-lg-6 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-exclamation-circle fa-2x grid-icon-3 grid-icon"></i>
 							<h3 class="grid-number assessments-to-grade">1</h3>
 							<p class="grid-text">Assessments To Grade</p>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-6">
+					<div class="col-lg-6 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-times fa-2x grid-icon-4 grid-icon"></i>
-							<h3 class="grid-number assessments-cancelled">1</h3>
-							<p class="grid-text">Assessments Cancelled</p>
+							<h3 class="grid-number assessments-missing">1</h3>
+							<p class="grid-text">Assessments Missing</p>
 						</div>
 					</div>
-					<div class="col-lg-4 col-md-6">
-						<div class="dashboard-box border-shadow">
-							<i class="fas fa-eye fa-2x grid-icon-6 grid-icon"></i>
-							<h3 class="grid-number assessments-visible">2.7/5</h3>
-							<p class="grid-text">Assessments Visible</p>
-						</div>
-					</div>
-					<div class="col-lg-4 col-md-6">
-						<div class="dashboard-box border-shadow">
-							<i class="fas fa-chart-line fa-2x grid-icon-5 grid-icon"></i>
-							<h3 class="grid-number class-overall">4</h3>
-							<p class="grid-text">Class Overall</p>
-						</div>
-					</div>
+
 
 				</div>
 			</div>
@@ -121,6 +108,7 @@
 
 		<a class="change-password-btn" href="{% url 'change-password' %}">CHANGE PASSWORD</a>
 		<a class="logout-btn" href="{% url 'log_out' %}">LOGOUT</a>
+		<a class="courses-btn" href="{% url 'courses' %}">COURSES</a>
 
 	</div>
 

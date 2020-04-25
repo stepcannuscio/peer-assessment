@@ -25,7 +25,8 @@ p {
 }
 
 .box {
-  padding: 5% 25% 5% 5%;
+  padding: 5%;
+  width: 100%;
   border-radius: 5px;
   pointer-events: none;
 }

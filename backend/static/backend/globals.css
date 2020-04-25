@@ -158,6 +158,32 @@ h2 {
   border-radius: 5px;
 }
 
+.courses-btn {
+  position: absolute;
+  top: 0;
+  left: 20px;
+  margin-top: 20px;
+  border: 1px solid;
+  padding: 5px 20px;
+  border-color: dodgerblue;
+  border-radius: 5px;
+  font-size: 15px;
+  background-color: dodgerblue;
+  color: white;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.courses-btn:hover {
+  -webkit-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -moz-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -ms-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  -o-box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  background-color: dodgerblue;
+  text-decoration: none;
+  color: white;
+}
+
 
 /* Popup Buttons */
 .cancel-btn {

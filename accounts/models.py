@@ -49,8 +49,7 @@ class MyUserManager(BaseUserManager):
         return user
     def get_by_natural_key(self,email_):
         return self.get(email=email_)
-    def make_random_password(self,length = 15,allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'):
-        return get_random_string(length,allowed_chars)
+
 
 
 
@@ -74,19 +73,35 @@ class User(AbstractBaseUser,PermissionsMixin):
     def clean(self):
         if len(str(self.eagle_id)) != 8:
             raise ValidationError("Eagle ID must be 8 integers")
+    def make_random_password(self,length = 15,allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'):
+        return get_random_string(length,allowed_chars)
 class Course_Enrollment(models.Model):
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='enrolled_courses')
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='enrolled_users')
 class Team_Enrollment(models.Model):
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='team_users')
     team = models.ForeignKey('Team',on_delete=models.CASCADE,related_name='teams')
+    is_active = models.BooleanField(default = True)
 
 class Team(models.Model): #each team can be of 2 or more students
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='team_course',default = "")
     #user = models.ForeignKey('User',on_delete=models.CASCADE,related_name = 'team_users')
     name = models.CharField(max_length = 50)
+
+
+
+
+    class Meta:
+        constraints = [ # Make sure the combo of team name and course are unique
+            models.UniqueConstraint(fields=['course', 'name'], name='unique_team')
+        ]
     def add(self,user):
         Team_Enrollment(user=user,team = self).save()
+
+
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
@@ -102,8 +117,17 @@ class Course(models.Model):
         constraints = [ # makes sure the combination of code, section_number, year, and sem_of_realization are unique
             models.UniqueConstraint(fields=['code','section_number','year','sem_of_realization'],name = 'unique_course'),
         ]
-    def add(self,assessment):
-        Course_Assessment(course = self,assessment=assessment).save()
+    def add_assessment(self, assessment):
+        Course_Assessment(course = self, assessment=assessment).save()
+
+    def add_user(self, user):
+        Course_Enrollment(course=self, user=user).save()
+
+    def add_team(self, team):
+        Team(course=self, name=team).save()
+
+    def __str__(self):
+        return self.name
 
 class Course_Assessment(models.Model):
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='peer_courses')
@@ -117,13 +141,19 @@ class Peer_Assessment(models.Model):
     is_published = models.BooleanField(default=False)
     def add(self,question):
         Question_Assessment(assessment=self,question=question).save()
+    def __str__(self):
+        return self.name
 
 class Assessment_Completion(models.Model):
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_assessment')
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
     is_graded = models.BooleanField(default=False)
+<<<<<<< HEAD
     grade = models.PositiveIntegerField(default = 0)
+=======
+    grade = models.PositiveIntegerField(default=0)
+>>>>>>> 13d474a9df13faf08dfe4f26e78b4150c11f090f
     comment = models.TextField(default="")
 
 
@@ -134,6 +164,7 @@ class Question_Assessment(models.Model):
 class Question(models.Model):
     question = models.CharField(max_length = 1000)
     is_open_ended = models.BooleanField(default=False)
+
 class Score(models.Model):
     score = models.PositiveIntegerField()
     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_score')

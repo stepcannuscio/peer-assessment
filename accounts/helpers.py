@@ -16,7 +16,7 @@ def get_peer_assessments(request,is_completed):
             if(assessment.is_completed == False):
                 completed_assessments.append(assessment)
     return completed_assessments
-def get_dashboard(request,is_completed): #can return all assessments, implement 
+def get_dashboard(request,is_completed): #can return all assessments, implement
     current_user = request.user.pk
     all_assessments = []
     assessments = Assessment_Completion.objects.filter(user_id=current_user)
@@ -70,22 +70,22 @@ def get_students(request): #This would only be called once you know which course
 
 #click on an assessment, and it gives you all questions for that assessment
 
-#function that gives overall score to student. 
+#function that gives overall score to student.
 
 #helper function to get the assessments that instructor has graded
 
-#function that gets the assessments that need to be graded from the instructor side 
+#function that gets the assessments that need to be graded from the instructor side
 
 #function that gets the students who did not finish the assessment (from the instructor side)
 
-#function that populates team they're in, assessment it's for . 
-#Once they click on it, it shows that Question, and relative scores and answers. 
+#function that populates team they're in, assessment it's for .
+#Once they click on it, it shows that Question, and relative scores and answers.
 
-#In All Assessments 
+#In All Assessments
 
 
-# Once someone clicks on an assessment, show all the teams for that assessment, click on a team and show all students in the team and whether or not 
-# it has been completed 
+# Once someone clicks on an assessment, show all the teams for that assessment, click on a team and show all students in the team and whether or not
+# it has been completed
 
 
 #download function that gives the average score for each person in a team, and also shows the open ended answers
@@ -100,12 +100,4 @@ def get_students(request): #This would only be called once you know which course
 
 
 
-#helper function to get the user's aggregate score. 
-
-
-
-
-
-
-
-
+#helper function to get the user's aggregate score.
