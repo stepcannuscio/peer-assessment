@@ -4,7 +4,7 @@ import pytz
 
 def get_peer_assessments(request,is_completed):
     current_user = request.user.pk
-    completed_assessments =[]
+    completed_assessment
     assessments = Assessment_Completion.objects.filter(user_id=current_user)
     #print(assessments)
     if (is_completed==True):#user selects to see all assessments that are completed
@@ -59,10 +59,17 @@ def get_students(request): #This would only be called once you know which course
         if(student.user.is_staff==False):
             students.append(student)
     return students
+def get_teams(request,course_id):#from instructor's perspective, at this point the course you are in is already known. Just need to populate the teams
+    current_instructor = request.user.pk
+    current_teams = Team.objects.filter(course = course_id)
+    team_students = []
+    for team in current_teams:
+        students = Team_Enrollment.objects.filter(team = team.id)
+        team_students.append(students)
 
-# def get_teams(request):#from instructor's perspective
-#     current_instructor = request.user.pk
-#     teams =  []
+    #find all teams with the instructor's course_id
+
+    
 
 #     instructor_c = team.objects.filter(user = current_instructor).select_related('course')
 

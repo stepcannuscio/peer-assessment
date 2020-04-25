@@ -3,6 +3,7 @@ from django.contrib.auth.models import PermissionsMixin, AbstractBaseUser,BaseUs
 from django.core.exceptions import ValidationError
 from datetime import datetime
 from django.utils.crypto import get_random_string
+import pytz
 # Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self,name,surname,email,eagle_id,password = None):
@@ -119,6 +120,11 @@ class Course(models.Model):
         ]
     def add_assessment(self, assessment):
         Course_Assessment(course = self, assessment=assessment).save()
+        students = Course_Enrollment.objects.filter(course= self).select_related('user')
+        for student in students:
+            if(student.user.is_staff==False):
+                Assessment_Completion(user = student.user, assessment=assessment).save()
+    
 
     def add_user(self, user):
         Course_Enrollment(course=self, user=user).save()
@@ -136,8 +142,8 @@ class Course_Assessment(models.Model):
 
 class Peer_Assessment(models.Model):
     name = models.CharField(max_length = 200,default="")
-    start_date = models.DateTimeField(default=datetime.min)
-    end_date = models.DateTimeField(default = datetime.max)
+    start_date = models.DateTimeField(default = datetime.now())
+    end_date = models.DateTimeField(default = "") 
     is_published = models.BooleanField(default=False)
     def add(self,question):
         Question_Assessment(assessment=self,question=question).save()
@@ -149,11 +155,7 @@ class Assessment_Completion(models.Model):
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
     is_graded = models.BooleanField(default=False)
-<<<<<<< HEAD
-    grade = models.PositiveIntegerField(default = 0)
-=======
     grade = models.PositiveIntegerField(default=0)
->>>>>>> 13d474a9df13faf08dfe4f26e78b4150c11f090f
     comment = models.TextField(default="")
 
 
