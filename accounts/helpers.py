@@ -1,5 +1,6 @@
 from .models import *
 from background_task import background
+import pytz
 
 def get_peer_assessments(request,is_completed):
     current_user = request.user.pk
@@ -23,26 +24,47 @@ def get_dashboard(request,is_completed): #can return all assessments, implement
         all_assessments.append(assessment)
     return all_assessments
 
-
-
-
 # @background(schedule = 60)
 # def generate_results(request):
 #     current_user = request.user.pk
 #     user_assessments = Assessment_Completion.objects.filter(user_id=current_user)
 
-#grab the assessments that studnets missed
 
-def get_missed_assignments(request,is_completed):
+#grab the assessments that students missed
+def get_missed_assignments(request):
     current_user = request.user.pk
     missed_assessments = []
-    assessments = Assessment_Completion.objects.filter(user_id=current_user)
-    assessments.prefetch_related('assessment')
+    assessments = Assessment_Completion.objects.filter(user_id=current_user).select_related('assessment')
     for assessment in assessments:
-        if(datetime.now > assessment.end_date):
+        if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
             missed_assessments.append(assessment)
     return missed_assessments
 
+#Function that gets all teams and students within a course(instructor perspective)
+def get_all_courses(request): #maybe modify this so you can get current vs previous classes
+    current_user = request.user.pk
+    current_courses = []
+    courses = Course_Enrollment.objects.filter(user=current_user).select_related('course')
+    for course in courses:
+        current_courses.append(course)
+    #print(current_courses[0].course.name)
+    return current_courses #also returns course attributes, so you can grab info related to courses 
+
+def get_students(request): #This would only be called once you know which course you're in 
+    current_instructor = request.user.pk
+    students = []  # not is_Staff, #matches user_id and is 
+    instructor_course = Course_Enrollment.objects.filter(user = current_instructor).select_related('user') #this returns all courses with the current user's id (teacher) and all users related
+    current_students = Course_Enrollment.objects.filter(course_id = instructor_course[0].course_id).select_related('user')
+    for student in current_students:
+        if(student.user.is_staff==False):
+            students.append(student)
+    return students
+
+# def get_teams(request):#from instructor's perspective
+#     current_instructor = request.user.pk
+#     teams =  []
+
+#     instructor_c = team.objects.filter(user = current_instructor).select_related('course')
 
 #from studnet perspective, student should be able to change answer after assessment complete (function that allows them to update their answers )
 
@@ -70,7 +92,6 @@ def get_missed_assignments(request,is_completed):
 
 #function that changes from unpublished to published
 
-#Function that gets all teams and students within a course
 
 
 
