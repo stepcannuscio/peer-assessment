@@ -81,7 +81,7 @@ def teams_students(request, course_id):
     course = get_object_or_404(Course, id=course_id)
 
     # Load all teams in this course
-    teams = get_list_or_404(Team, course=course.id)
+    teams = Team.objects.filter(course=course.id)
 
     # Load all students in this course
     student_enrollments = Course_Enrollment.objects.filter(course=course.id)

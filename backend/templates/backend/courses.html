@@ -23,7 +23,7 @@
     <h1>Welcome {{ user.name }}!</h1>
     <p>Choose your course:</p>
     <h3 class="is-staff">{{user.is_staff}}</h3>
-    <div class="row">
+    <div class="row justify-content-center">
       {% for course in courses %}
       <div class="col-lg-4 col-md-6">
         <div class="box border-shadow">
@@ -38,7 +38,8 @@
       </div>
       {% endfor %}
     </div>
-
+    <a class="change-password-btn" href="{% url 'change-password' %}">CHANGE PASSWORD</a>
+    <a class="logout-btn" href="{% url 'log_out' %}">LOGOUT</a>
   </body>
 
   <script>
