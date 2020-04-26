@@ -61,11 +61,11 @@ def peer_assessments(request, course_id):
             team = user_team
     print(team)
 
-    teammates = get_teammates(team.team.id, request.user)
+    teammates = get_teammates(team.team.id, request.user.pk)
 
     print(teammates[0].user.id)
 
-    total_assessments, completed_assessments, todo_assessments, missed_assessments = get_student_dashboard(request, course_id)
+    todo_assessments, missed_assessments = get_peer_assessments(request, course)
 
     return render(request, 'backend/peer-assessments.html', {'course': course,
         'student': teammates[0], 'todo_assessments':todo_assessments,

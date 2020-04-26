@@ -46,6 +46,7 @@ course.add_assessment(p6)
 
 """
 
+
 from .models import *
 from background_task import background
 import pytz
@@ -86,16 +87,14 @@ def get_student_dashboard(request, course):
 
     return total_assessments, completed_assessments, todo_assessments, missed_assessments
 
-def get_peer_assessments(course_id):
+def get_peer_assessments(request, course):
 
-    course = get_object_or_404(Course, id=course_id)
     active_teams = Team_Enrollment.objects.filter(user_id=request.user.pk, is_active=True).select_related('team')
 
     course_team = None
     for team in active_teams:
-        if team.team.course_id == course_id:
+        if team.team.course_id == course.id:
             course_team = team
-    print(course_team)
 
     teammates = get_teammates(team.team.id, request.user)
 
@@ -103,30 +102,27 @@ def get_peer_assessments(course_id):
 
     student_assessments = get_student_assessments(request, course)
 
-    assessments_log = {}
+    missed_assessments = []
+    todo_assessments = []
+    dup_assessments = []
+
     for assessment in student_assessments:
 
-        id = assessment.assessment.id
-        if id not in assessments_log.keys():
-            assessments_log[id] = 0
-
-        if assessment.is_completed == True:
-            assessments_log[id] += 1
-            # completed_assessments.append(assessment)
-        elif assessment.is_completed == False:
-            # print(f'End date: {assessment.assessment.end_date}')
-            # print(f'Localized time: {pytz.utc.localize(datetime.now())}')
+        if assessment.is_completed == False:
             if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
-                missed_assessments.append(assessment)
+                if assessment.assessment not in dup_assessments:
+                    missed_assessments.append(assessment)
+                    dup_assessments.append(assessment.assessment)
             else:
-                todo_assessments.append(assessment)
-        
+                if assessment.assessment not in dup_assessments:
+                    todo_assessments.append(assessment)
+                    dup_assessments.append(assessment.assessment)
 
-    return total_assessments, completed_assessments, todo_assessments, missed_assessments
+    return todo_assessments, missed_assessments
 
 
 def get_teammates(team, user):
-    teammates = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=request.user).select_related('user')
+    teammates = Team_Enrollment.objects.filter(team=team).exclude(user=user).select_related('user')
     return teammates
 
 
