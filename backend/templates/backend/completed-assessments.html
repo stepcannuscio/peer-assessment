@@ -63,19 +63,19 @@
       <div class="container-fluid">
         <h1 class="main-header">Completed</h1>
         <div id="assessment-section" class="row justify-content-start">
+          {% for assessment in completed_assessments %}
           <div class="col-lg-6 col-md-6">
             <div class="box border-shadow">
-              <h2 class="assessment-name"></h2>
-              <strong>Due Date:</strong>
-              <h3 class="due-date"></h3><br>
-              <strong>Overall:</strong>
-              <h3 class="overall">
-                </h4><br>
-                <strong>Note:</strong>
-                <h3 class="note">
-                  </h4><br>
+
+
+              <h2 class="assessment-name">{{ assessment.assessment }}</h2><br>
+              <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.assessment.end_date }}</h3><br>
+              <h3 class="overall"><strong>Overall: </strong></h3><br>
+              <h3 class="note"><strong>Note: </strong></h3><br>
+
             </div>
           </div>
+          {% endfor %}
         </div>
       </div>
     </div>
@@ -86,36 +86,6 @@
 
   </div>
 
-
-
-
-
-
-
-
-  <script type="text/javascript">
-    function loadAssessments() {
-      // Load students for this assessment from database - use Django
-      var deliveryNames = ["Delivery 1", "Delivery 2", "Delivery 3", "Delivery 4"];
-      var dueDates = ["March 16th 2020", "March 26th 2020", "March 31st 2020", "April 5th 2020"];
-      var overalls = ["1", "2", "3", "4"];
-      var notes = ["Hi", "Hey", "High", "Hay"];
-
-      var assessment = $(".col-lg-6");
-
-      for (i = 0; i < deliveryNames.length; i++) {
-        console.log('asdf')
-        var newAssessment = assessment.clone()
-        newAssessment.find(".assessment-name").text(deliveryNames[i] + " Assessments");
-        newAssessment.find(".due-date").text(" " + dueDates[i]);
-        newAssessment.find(".overall").text(" " + overalls[i] + "/5");
-        newAssessment.find(".note").text(" " + notes[i]);
-        $("#assessment-section").append(newAssessment);
-      }
-      assessment.hide();
-    }
-    loadAssessments()
-  </script>
 
 </body>
 

@@ -61,16 +61,14 @@ def peer_assessments(request, course_id):
             team = user_team
     print(team)
 
-    students = []
-    if team:
-        students = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=request.user).select_related('user')
+    teammates = get_teammates(team.team.id, request.user)
 
-    print(students[0].user.id)
+    print(teammates[0].user.id)
 
     total_assessments, completed_assessments, todo_assessments, missed_assessments = get_student_dashboard(request, course_id)
 
     return render(request, 'backend/peer-assessments.html', {'course': course,
-        'student': students[0], 'todo_assessments':todo_assessments,
+        'student': teammates[0], 'todo_assessments':todo_assessments,
         'missed_assessments': missed_assessments})
 
     args = {'message': storage}
@@ -78,7 +76,9 @@ def peer_assessments(request, course_id):
 def completed_assessments(request, course_id):
     storage = messages.get_messages(request)
     course = get_object_or_404(Course, id=course_id)
-    return render(request, 'backend/completed-assessments.html', {'course': course})
+    total_assessments, completed_assessments, todo_assessments, missed_assessments = get_student_dashboard(request, course_id)
+    return render(request, 'backend/completed-assessments.html', {'course': course,
+        'completed_assessments': completed_assessments})
     args = {'message': storage}
 
 def all_assessments(request, course_id):
@@ -109,32 +109,6 @@ def teams_students(request, course_id):
     for team in teams:
         students = Team_Enrollment.objects.filter(team=team.id)
         students_on_teams += students
-
-
-
-
-
-
-    # enrollments = []
-    # for team in teams:
-    #     try:
-    #         enrollment = get_list_or_404(Team_Enrollment, team=team.id)
-    #         enrollments += enrollment
-    #     except:
-    #         print(f'No students on {team.name}')
-
-    # students = []
-    # for enrollment in enrollments:
-    #     if enrollment.user_id != request.user.pk:
-    #         student = get_list_or_404(User, id=enrollment.user_id)
-    #         students += student
-
-    # course_enrollments = get_list_or_404(Course_Enrollment, course=course.id)
-    # for stud in course_enrollments:
-    #     if stud.user_id != request.user.pk:
-    #         student = get_list_or_404(User, id=stud.user_id)
-    #         students += student
-    # course_enrollments = get_list_or_404(Course_Enrollment, course=course.id)
 
 
     return render(request, 'backend/teams-students.html', {'course': course,
@@ -226,8 +200,11 @@ def save_answer(request, course_id, assessment_id, student_id):
             if question.is_open_ended != True:
                 answer = Answer(question = question,
                     user=request.user, student=student, score=scores[i])
+                update = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id)
+                update.is_completed = True
+                update.save()
+                answer.save()
 
-            answer.save()
 
         for i in range(len(answers)):
             question = Question.objects.get(id=questions[i+len(scores)])

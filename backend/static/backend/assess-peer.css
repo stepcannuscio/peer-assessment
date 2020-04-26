@@ -1,11 +1,19 @@
 .popup-header {
-  font-size: 20px;
-  padding-top: 2%;
+  font-size: 35px;
+  padding: 2% 0;
+  color: #6a68f6;
+  text-align: center;
+}
+.popup {
+  width: 50%;
+  left: 25%;
 }
 
 .popup-subheader {
   color: #757575;
-  padding: 4% 0 0 0;
+  /* padding: 4% 0 0 0; */
+  font-size: 17px;
+  text-align: center;
 }
 .student-name {
   color: #6a68f6;

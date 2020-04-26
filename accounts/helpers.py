@@ -1,3 +1,51 @@
+"""
+Shell Commands
+
+from accounts.models import *
+
+***
+Create Assessment:
+
+from datetime import datetime
+from pytz import timezone
+import pytz
+
+eastern = timezone("US/Eastern")
+
+start_dt = eastern.localize(datetime(2020,4,25,10,0,0))
+end_dt =  eastern.localize(datetime(2020,4,26,23,59,59))
+
+p6 = Peer_Assessment(name="Delivery 6", start_date=start_dt, end_date=end_dt)
+p6.save()
+
+***
+Add Questions to Assessment:
+
+q1 = Question.objects.get(pk=1)
+q2 = Question.objects.get(pk=2)
+q3 = Question.objects.get(pk=4)
+q4 = Question.objects.get(pk=5)
+q5 = Question.objects.get(pk=6)
+q6 = Question.objects.get(pk=7)
+q7 = Question.objects.get(pk=8)
+q8 = Question.objects.get(pk=9)
+q9 = Question.objects.get(pk=3)
+q10 = Question.objects.get(pk=10)
+
+questions = [q1,q2,q3,q4,q5,q6,q7,q8,q9,q10]
+
+for question in questions:
+    p6.add(question)
+
+***
+Add Assessment to Course:
+
+course = Course.objects.get(pk=4)
+p6 = Peer_Assessment.objects.get(pk=6)
+course.add_assessment(p6)
+
+"""
+
 from .models import *
 from background_task import background
 import pytz
@@ -37,6 +85,52 @@ def get_student_dashboard(request, course):
         total_assessments.append(assessment)
 
     return total_assessments, completed_assessments, todo_assessments, missed_assessments
+
+def get_peer_assessments(course_id):
+
+    course = get_object_or_404(Course, id=course_id)
+    active_teams = Team_Enrollment.objects.filter(user_id=request.user.pk, is_active=True).select_related('team')
+
+    course_team = None
+    for team in active_teams:
+        if team.team.course_id == course_id:
+            course_team = team
+    print(course_team)
+
+    teammates = get_teammates(team.team.id, request.user)
+
+    print(teammates[0].user.id)
+
+    student_assessments = get_student_assessments(request, course)
+
+    assessments_log = {}
+    for assessment in student_assessments:
+
+        id = assessment.assessment.id
+        if id not in assessments_log.keys():
+            assessments_log[id] = 0
+
+        if assessment.is_completed == True:
+            assessments_log[id] += 1
+            # completed_assessments.append(assessment)
+        elif assessment.is_completed == False:
+            # print(f'End date: {assessment.assessment.end_date}')
+            # print(f'Localized time: {pytz.utc.localize(datetime.now())}')
+            if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
+                missed_assessments.append(assessment)
+            else:
+                todo_assessments.append(assessment)
+        
+
+    return total_assessments, completed_assessments, todo_assessments, missed_assessments
+
+
+def get_teammates(team, user):
+    teammates = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=request.user).select_related('user')
+    return teammates
+
+
+
 # @background(schedule = 60)
 # def generate_results(request):
 #     current_user = request.user.pk
