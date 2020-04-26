@@ -124,7 +124,7 @@ class Course(models.Model):
         for student in students:
             if(student.user.is_staff==False):
                 Assessment_Completion(user = student.user, assessment=assessment).save()
-    
+
 
     def add_user(self, user):
         Course_Enrollment(course=self, user=user).save()
@@ -143,7 +143,7 @@ class Course_Assessment(models.Model):
 class Peer_Assessment(models.Model):
     name = models.CharField(max_length = 200,default="")
     start_date = models.DateTimeField(default = datetime.now())
-    end_date = models.DateTimeField(default = "") 
+    end_date = models.DateTimeField(default = "")
     is_published = models.BooleanField(default=False)
     def add(self,question):
         Question_Assessment(assessment=self,question=question).save()
@@ -166,12 +166,14 @@ class Question_Assessment(models.Model):
 class Question(models.Model):
     question = models.CharField(max_length = 1000)
     is_open_ended = models.BooleanField(default=False)
-
-class Score(models.Model):
-    score = models.PositiveIntegerField()
-    question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_score')
-    user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_score')
+#
+# class Score(models.Model):
+#     score = models.PositiveIntegerField()
+#     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_score')
+#     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_score')
 class Answer(models.Model):
-    answer = models.TextField()
+    answer = models.TextField(default="", blank=True)
     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_answer')
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_answer')
+    student = models.ForeignKey('User',on_delete=models.CASCADE,related_name='student_answer', default="")
+    score = models.PositiveIntegerField(default=0, blank=True)

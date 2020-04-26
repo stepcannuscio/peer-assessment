@@ -6,7 +6,9 @@ class CreateTeamForm(forms.ModelForm):
         model = Team
         fields = ['name']
 
-class AddStudentForm(forms.ModelForm):
+class AnswerForm(forms.ModelForm):
     class Meta:
-        model = Team_Enrollment
-        fields = ['user', 'team']
+        model = Answer
+        fields = ['answer', 'score', 'question']
+
+    # def clean(self):

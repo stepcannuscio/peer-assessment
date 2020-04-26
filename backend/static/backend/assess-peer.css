@@ -1,0 +1,66 @@
+.popup-header {
+  font-size: 20px;
+  padding-top: 2%;
+}
+
+.popup-subheader {
+  color: #757575;
+  padding: 4% 0 0 0;
+}
+.student-name {
+  color: #6a68f6;
+  text-align: center;
+}
+.student {
+  font-weight: 400;
+  font-size: 17px;
+  padding-top: 4%;
+}
+
+/* Slider */
+input[type="range"] {
+  -webkit-appearance: none;
+  -moz-apperance: none;
+  border-radius: 6px;
+  height: 2px;
+  background-image: -webkit-gradient(linear,
+      left top,
+      right top,
+      color-stop(0, #6a68f6),
+      color-stop(0, #c7c6fc));
+  margin: 20px 0 10px 0;
+  width: 100%;
+}
+
+input[type=range]:focus {
+  outline: none;
+}
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none !important;
+  height: 15px;
+  width: 15px;
+  border-radius: 50%;
+  background: #6a68f6;
+  cursor: pointer;
+  -webkit-appearance: none;
+}
+
+.range-wrap {
+  width: 100%;
+  position: relative;
+}
+
+.slider-number {
+  display: inline-block;
+  padding: 0 14.5% 0 1%;
+}
+
+.slider-last {
+  display: inline-block;
+  padding-left: 1%;
+}
+
+.popup-btn {
+  padding-left: 50%;
+}

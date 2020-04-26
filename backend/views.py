@@ -31,35 +31,48 @@ def courses(request):
 # DASHBOARD PAGES
 def student_home(request, course_id):
     storage = messages.get_messages(request)
-    # # team_enrollment = get_object_or_404(Team_Enrollment, user=request.user.pk)
-    # team_ids = Team_Enrollment.objects.filter(user=request.user.pk)
 
-    # courses = Course_Enrollment.objects.filter(user_id = request.user.pk)
-    # completed_count = 0
-    # for course in courses:
-    #     assessments = Course_Assessment.objects.filter(course_id=course.course_id)
-    #
-    #     for assessment in assessments:
-    #         completed_assessments = Assessment_Completion.objects.filter(
-    #             assessment_id=assessment.assessment_id,user_id = request.user.pk, is_completed=True)
-    #         for completed in completed_assessments:
-    #             completed_count += 1
-    # print(completed_count)
     course = get_object_or_404(Course, id=course_id)
 
-    return render(request, 'backend/student-home.html', {'course': course})
+    total_assessments, completed_assessments, todo_assessments, missed_assessments = get_student_dashboard(request, course_id)
+
+    return render(request, 'backend/student-home.html', {'course': course,
+        'total_assessments': total_assessments, 'completed_assessments': completed_assessments,
+        'todo_assessments': todo_assessments, 'missed_assessments': missed_assessments})
+
     args = {'message': storage}
 
 def professor_home(request, course_id):
     storage = messages.get_messages(request)
     course = get_object_or_404(Course, id=course_id)
+
     return render(request, 'backend/professor-home.html', {'course': course})
     args = {'message': storage}
 
 def peer_assessments(request, course_id):
     storage = messages.get_messages(request)
+
     course = get_object_or_404(Course, id=course_id)
-    return render(request, 'backend/peer-assessments.html', {'course': course})
+    teams = Team_Enrollment.objects.filter(user_id=request.user.pk, is_active=True).select_related('team')
+
+    team = None
+    for user_team in teams:
+        if user_team.team.course_id == course_id:
+            team = user_team
+    print(team)
+
+    students = []
+    if team:
+        students = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=request.user).select_related('user')
+
+    print(students[0].user.id)
+
+    total_assessments, completed_assessments, todo_assessments, missed_assessments = get_student_dashboard(request, course_id)
+
+    return render(request, 'backend/peer-assessments.html', {'course': course,
+        'student': students[0], 'todo_assessments':todo_assessments,
+        'missed_assessments': missed_assessments})
+
     args = {'message': storage}
 
 def completed_assessments(request, course_id):
@@ -96,6 +109,7 @@ def teams_students(request, course_id):
     for team in teams:
         students = Team_Enrollment.objects.filter(team=team.id)
         students_on_teams += students
+
 
 
 
@@ -187,3 +201,81 @@ def add_student(request, course_id):
             print(form.errors.as_data())
     print(str(course_id))
     return redirect('teams-students', course_id)
+
+def save_answer(request, course_id, assessment_id, student_id):
+    if request.method == 'POST':
+        print('post')
+        assessment = Peer_Assessment.objects.get(id=assessment_id)
+        # questions = Question_Assessment.objects.filter(assessment=assessment_id).select_related('question')
+
+
+        questions = request.POST.getlist('question')
+        scores = request.POST.getlist('score')
+        answers = request.POST.getlist('answer')
+
+        student = User.objects.get(id=student_id)
+
+
+        print(questions)
+        print(scores)
+        print(answers)
+
+        for i in range(len(scores)):
+            question = Question.objects.get(id=questions[i])
+
+            if question.is_open_ended != True:
+                answer = Answer(question = question,
+                    user=request.user, student=student, score=scores[i])
+
+            answer.save()
+
+        for i in range(len(answers)):
+            question = Question.objects.get(id=questions[i+len(scores)])
+
+            answer = Answer(answer=answers[i], question = question,
+                user=request.user, student=student)
+            answer.save()
+
+        messages.success(request, f'Successfully completed assessment')
+
+    return redirect('peer-assessments', course_id)
+
+
+def assess_peer(request, course_id, assessment_id, student_id):
+    print('*** ASSESS PEER ***')
+    print(course_id)
+    print(assessment_id)
+    print(student_id)
+    student = User.objects.get(id=student_id)
+
+    course = get_object_or_404(Course, id=course_id)
+    assessment = get_object_or_404(Peer_Assessment, id=assessment_id)
+    teams = Team_Enrollment.objects.filter(user_id=request.user.pk, is_active=True).select_related('team')
+
+    team = None
+    for user_team in teams:
+        if user_team.team.course_id == course_id:
+            team = user_team
+    print(team)
+
+    students = []
+    if team:
+        students = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=request.user).select_related('user')
+
+    print(students[0].user.name)
+
+    questions = Question_Assessment.objects.filter(assessment=assessment_id).select_related('question')
+
+    open_ended = []
+    not_open_ended = []
+    # answers = []
+    for question in questions:
+        if question.question.is_open_ended:
+            open_ended.append(question)
+        else:
+            not_open_ended.append(question)
+
+    return render(request, 'backend/assess-peer.html', {
+        'course': course, 'assessment': assessment, 'team': team, 'student': student,
+        'students': students,
+        'open_ended': open_ended, 'not_open_ended': not_open_ended})
