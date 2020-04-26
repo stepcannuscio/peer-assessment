@@ -2,28 +2,41 @@ from .models import *
 from background_task import background
 import pytz
 
-def get_peer_assessments(request,is_completed):
+def get_student_assessments(request, course):
     current_user = request.user.pk
-    completed_assessment
-    assessments = Assessment_Completion.objects.filter(user_id=current_user)
-    #print(assessments)
-    if (is_completed==True):#user selects to see all assessments that are completed
-        for assessment in assessments:
-            if(assessment.is_completed==True):
-                completed_assessments.append(assessment)
-    else:#grab everything
-        for assessment in assessments:
-            if(assessment.is_completed == False):
-                completed_assessments.append(assessment)
-    return completed_assessments
-def get_dashboard(request,is_completed): #can return all assessments, implement
-    current_user = request.user.pk
-    all_assessments = []
-    assessments = Assessment_Completion.objects.filter(user_id=current_user)
-    for assessment in assessments:
-        all_assessments.append(assessment)
-    return all_assessments
+    course_assessments = Course_Assessment.objects.filter(course = course).select_related('assessment')
 
+    assessments = []
+
+    for assessment in course_assessments:
+        student_assessment = Assessment_Completion.objects.filter(user_id=current_user).filter(assessment=assessment.assessment_id)
+        assessments += student_assessment
+
+    return assessments
+
+
+def get_student_dashboard(request, course):
+
+    student_assessments = get_student_assessments(request, course)
+
+    total_assessments = []
+    completed_assessments = []
+    todo_assessments = []
+    missed_assessments = []
+
+    for assessment in student_assessments:
+        if assessment.is_completed == True:
+            completed_assessments.append(assessment)
+        elif assessment.is_completed == False:
+            # print(f'End date: {assessment.assessment.end_date}')
+            # print(f'Localized time: {pytz.utc.localize(datetime.now())}')
+            if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
+                missed_assessments.append(assessment)
+            else:
+                todo_assessments.append(assessment)
+        total_assessments.append(assessment)
+
+    return total_assessments, completed_assessments, todo_assessments, missed_assessments
 # @background(schedule = 60)
 # def generate_results(request):
 #     current_user = request.user.pk
@@ -48,11 +61,11 @@ def get_all_courses(request): #maybe modify this so you can get current vs previ
     for course in courses:
         current_courses.append(course)
     #print(current_courses[0].course.name)
-    return current_courses #also returns course attributes, so you can grab info related to courses 
+    return current_courses #also returns course attributes, so you can grab info related to courses
 
-def get_students(request): #This would only be called once you know which course you're in 
+def get_students(request): #This would only be called once you know which course you're in
     current_instructor = request.user.pk
-    students = []  # not is_Staff, #matches user_id and is 
+    students = []  # not is_Staff, #matches user_id and is
     instructor_course = Course_Enrollment.objects.filter(user = current_instructor).select_related('user') #this returns all courses with the current user's id (teacher) and all users related
     current_students = Course_Enrollment.objects.filter(course_id = instructor_course[0].course_id).select_related('user')
     for student in current_students:
@@ -69,7 +82,7 @@ def get_teams(request,course_id):#from instructor's perspective, at this point t
 
     #find all teams with the instructor's course_id
 
-    
+
 
 #     instructor_c = team.objects.filter(user = current_instructor).select_related('course')
 

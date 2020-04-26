@@ -72,28 +72,28 @@
 					<div class="col-lg-4 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-check-circle fa-2x grid-icon-1 grid-icon"></i>
-							<h3 class="grid-number completed-assessments">4</h3>
+							<h3 class="grid-number completed-assessments">{{ completed_assessments|length }}</h3>
 							<p class="grid-text">Completed Assessments</p>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-list-ul fa-2x grid-icon-2 grid-icon"></i>
-							<h3 class="grid-number total-assessments">6</h3>
+							<h3 class="grid-number total-assessments">{{ total_assessments|length }}</h3>
 							<p class="grid-text">Total Assessments</p>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-exclamation-circle fa-2x grid-icon-3 grid-icon"></i>
-							<h3 class="grid-number assessments-to-do">1</h3>
+							<h3 class="grid-number assessments-to-do">{{ todo_assessments|length }}</h3>
 							<p class="grid-text">Assessments To-Do</p>
 						</div>
 					</div>
 					<div class="col-lg-4 col-md-6">
 						<div class="dashboard-box border-shadow">
 							<i class="fas fa-times fa-2x grid-icon-4 grid-icon"></i>
-							<h3 class="grid-number assessments-missed">1</h3>
+							<h3 class="grid-number assessments-missed">{{ missed_assessments|length }}</h3>
 							<p class="grid-text">Assessments Missed</p>
 						</div>
 					</div>
