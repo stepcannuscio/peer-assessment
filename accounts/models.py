@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from datetime import datetime
 from django.utils.crypto import get_random_string
 import pytz
+
 # Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self,name,surname,email,eagle_id,password = None):
@@ -121,9 +122,20 @@ class Course(models.Model):
     def add_assessment(self, assessment):
         Course_Assessment(course = self, assessment=assessment).save()
         students = Course_Enrollment.objects.filter(course= self).select_related('user')
+
+
         for student in students:
-            if(student.user.is_staff==False):
-                Assessment_Completion(user = student.user, assessment=assessment).save()
+            if student.user.is_staff == False:
+                course_team = None
+                active_teams = Team_Enrollment.objects.filter(user_id=student.user.id, is_active=True).select_related('team')
+                for team in active_teams:
+                    if team.team.course == self:
+                        course_team = team
+                teammates = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=student.user.id).select_related('user')
+
+
+                for mate in teammates:
+                    Assessment_Completion(user = student.user, assessment=assessment, student=mate.user).save()
 
 
     def add_user(self, user):
@@ -142,7 +154,7 @@ class Course_Assessment(models.Model):
 
 class Peer_Assessment(models.Model):
     name = models.CharField(max_length = 200,default="")
-    start_date = models.DateTimeField(default = datetime.now())
+    start_date = models.DateTimeField(default = "")
     end_date = models.DateTimeField(default = "")
     is_published = models.BooleanField(default=False)
     def add(self,question):
@@ -154,6 +166,10 @@ class Assessment_Completion(models.Model):
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_assessment')
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
+    student = models.ForeignKey('User',on_delete=models.CASCADE,related_name='student_assessment', default="")
+
+class Instructor_Assessment(models.Model):
+    assessment_completion = models.ForeignKey('Assessment_Completion',on_delete=models.CASCADE,related_name='instructor_completion')
     is_graded = models.BooleanField(default=False)
     grade = models.PositiveIntegerField(default=0)
     comment = models.TextField(default="")
