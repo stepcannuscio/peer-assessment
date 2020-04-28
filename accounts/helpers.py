@@ -10,13 +10,12 @@ from datetime import datetime
 from pytz import timezone
 import pytz
 
-eastern = timezone("US/Eastern")
 
-start_dt = eastern.localize(datetime(2020,4,25,10,0,0))
-end_dt =  eastern.localize(datetime(2020,4,26,23,59,59))
+start_dt = pytz.utc.localize(datetime(2020,4,25,10,0,0))
+end_dt =  pytz.utc.localize(datetime(2020,5,26,23,59,59))
 
-p6 = Peer_Assessment(name="Delivery 6", start_date=start_dt, end_date=end_dt)
-p6.save()
+p12 = Peer_Assessment(name="Delivery 12", start_date=start_dt, end_date=end_dt)
+p12.save()
 
 ***
 Add Questions to Assessment:
@@ -35,7 +34,7 @@ q10 = Question.objects.get(pk=10)
 questions = [q1,q2,q3,q4,q5,q6,q7,q8,q9,q10]
 
 for question in questions:
-    p6.add(question)
+    p12.add(question)
 
 ***
 Add Assessment to Course:
@@ -46,10 +45,29 @@ course.add_assessment(p6)
 
 """
 
-
 from .models import *
 from background_task import background
 import pytz
+from collections import OrderedDict
+
+def get_teammates(team, user, exclude=None):
+    if exclude:
+        exclude.append(user)
+        teammates = Team_Enrollment.objects.filter(team=team).exclude(user__in=exclude).select_related('user')
+    else:
+        teammates = Team_Enrollment.objects.filter(team=team).exclude(user=user).select_related('user')
+
+    return teammates
+
+def get_current_team(user, course):
+    active_teams = Team_Enrollment.objects.filter(user=user.pk, is_active=True).select_related('team')
+
+    course_team = None
+    for team in active_teams:
+        if team.team.course_id == course.id:
+            course_team = team
+
+    return team
 
 def get_student_assessments(request, course):
     current_user = request.user.pk
@@ -63,67 +81,104 @@ def get_student_assessments(request, course):
 
     return assessments
 
-
 def get_student_dashboard(request, course):
-
+    current_team = get_current_team(request.user, course)
+    teammates = get_teammates(current_team.team.id, request.user)
     student_assessments = get_student_assessments(request, course)
 
-    total_assessments = []
-    completed_assessments = []
-    todo_assessments = []
-    missed_assessments = []
+    completed_assessments = get_complete_assessments(student_assessments, teammates)
+    todo_assessments, missed_assessments = get_incomplete_assessments(student_assessments)
 
-    for assessment in student_assessments:
-        if assessment.is_completed == True:
-            completed_assessments.append(assessment)
-        elif assessment.is_completed == False:
-            # print(f'End date: {assessment.assessment.end_date}')
-            # print(f'Localized time: {pytz.utc.localize(datetime.now())}')
-            if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
-                missed_assessments.append(assessment)
-            else:
-                todo_assessments.append(assessment)
-        total_assessments.append(assessment)
+    total_assessments = completed_assessments + todo_assessments + missed_assessments
 
     return total_assessments, completed_assessments, todo_assessments, missed_assessments
 
-def get_peer_assessments(request, course):
-
-    active_teams = Team_Enrollment.objects.filter(user_id=request.user.pk, is_active=True).select_related('team')
-
-    course_team = None
-    for team in active_teams:
-        if team.team.course_id == course.id:
-            course_team = team
-
-    teammates = get_teammates(team.team.id, request.user)
-
-    print(teammates[0].user.id)
-
+def get_peer_assessments(request, course, completed=False, team_info=False):
+    current_team = get_current_team(request.user, course)
+    teammates = get_teammates(current_team.team.id, request.user)
     student_assessments = get_student_assessments(request, course)
 
+    if completed == False:
+        todo_assessments, missed_assessments = get_incomplete_assessments(student_assessments)
+        if team_info:
+            return todo_assessments, missed_assessments, current_team, teammates
+        else:
+            return todo_assessments, missed_assessments
+    else:
+        completed_assessments = get_complete_assessments(student_assessments, teammates)
+        return completed_assessments
+
+def get_incomplete_assessments(assessments):
     missed_assessments = []
     todo_assessments = []
     dup_assessments = []
 
-    for assessment in student_assessments:
-
+    for assessment in assessments:
         if assessment.is_completed == False:
-            if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
+
+            if pytz.utc.localize(datetime.now()) > assessment.assessment.end_date:
+                # Past due - missed
                 if assessment.assessment not in dup_assessments:
                     missed_assessments.append(assessment)
                     dup_assessments.append(assessment.assessment)
             else:
+                # To do
                 if assessment.assessment not in dup_assessments:
                     todo_assessments.append(assessment)
                     dup_assessments.append(assessment.assessment)
-
     return todo_assessments, missed_assessments
 
+def get_complete_assessments(assessments, teammates):
+    completed_assessments = []
+    assessment_log = {}
 
-def get_teammates(team, user):
-    teammates = Team_Enrollment.objects.filter(team=team).exclude(user=user).select_related('user')
-    return teammates
+    for assessment in assessments:
+        id = assessment.assessment.id
+        if assessment.is_completed:
+            if id not in assessment_log.keys():
+                assessment_log[id] = 1
+            else:
+                assessment_log[id] += 1
+        else:
+            if id not in assessment_log.keys():
+                assessment_log[id] = 0
+
+    for key, value in assessment_log.items():
+        if value == len(teammates):
+            assessment = Peer_Assessment.objects.get(pk=key)
+            completed_assessments.append(assessment)
+
+    return completed_assessments
+
+def get_students_not_assessed(request, course, assessment_id):
+    current_team = get_current_team(request.user, course)
+    teammates = get_teammates(current_team.team.id, request.user)
+
+    complete_teammates = []
+
+    for teammate in teammates:
+        assessment = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student=teammate.user)
+        print(assessment)
+        if assessment.is_completed:
+            complete_teammates.append(teammate.user)
+    teammates = get_teammates(current_team.team.id, request.user, exclude=complete_teammates)
+
+    return teammates, current_team
+
+def get_questions(assessment_id):
+    questions = Question_Assessment.objects.filter(assessment=assessment_id).select_related('question')
+    open_ended = []
+    not_open_ended = []
+
+    for question in questions:
+        if question.question.is_open_ended:
+            open_ended.append(question)
+        else:
+            not_open_ended.append(question)
+
+    return not_open_ended, open_ended
+
+
 
 
 
@@ -133,15 +188,6 @@ def get_teammates(team, user):
 #     user_assessments = Assessment_Completion.objects.filter(user_id=current_user)
 
 
-#grab the assessments that students missed
-def get_missed_assignments(request):
-    current_user = request.user.pk
-    missed_assessments = []
-    assessments = Assessment_Completion.objects.filter(user_id=current_user).select_related('assessment')
-    for assessment in assessments:
-        if(pytz.utc.localize(datetime.now()) > assessment.assessment.end_date):
-            missed_assessments.append(assessment)
-    return missed_assessments
 
 #Function that gets all teams and students within a course(instructor perspective)
 def get_all_courses(request): #maybe modify this so you can get current vs previous classes

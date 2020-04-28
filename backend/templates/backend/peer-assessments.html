@@ -72,7 +72,7 @@
           {% for todo in todo_assessments %}
           <div class="col-lg-6 col-md-6">
             <div class="todo-box box">
-              <a class="assessment-link" href="{% url 'assess-peer' course.id todo.assessment.id student.user.id%}"></a>
+              <a class="assessment-link" href="{% url 'assess-peer-home' course.id todo.assessment.id %}"></a>
               <h2 class="assessment-title">{{ todo.assessment }}</h2>
               <h3 class="due-date"><strong>Due Date: </strong>{{ todo.assessment.end_date }}</h3>
               <p>Click here to start</p>
@@ -106,37 +106,6 @@
     <a class="courses-btn" href="{% url 'courses' %}">COURSES</a>
   </div>
 
-
-  <!-- <div class="assessment-popup popup">
-    <h3 class="popup-header">Delivery 6 Assessment</h3>
-    <p class="popup-subheader">Please fill out the peer assesment for each of your teammates</p>
-
-
-    <div class="student-assessment">
-      <h4 class="student"><strong></strong> Score. (0=Lowest / 5=Best)</h4>
-      <div class="range-wrap">
-        <input id="slider" type="range" min="0" max="5" step="1" value="0">
-        <div class="slider-numbers">
-          <p class="slider-number">0</p>
-          <p class="slider-number">1</p>
-          <p class="slider-number">2</p>
-          <p class="slider-number">3</p>
-          <p class="slider-number">4</p>
-          <p class="slider-last">5</p>
-        </div>
-      </div>
-      <p class="inner-text"></p>
-      <input class="comment-input" type="text" placeholder="">
-      <hr>
-    </div>
-
-
-    <button type="button" class="cancel-btn btn btn-link">CANCEL</button>
-    <button type="button" class="submit-btn btn btn-link">SUBMIT</button>
-
-  </div> -->
-
-
   <script>
   var boxes = document.getElementsByClassName("todo-box");
 
@@ -145,59 +114,10 @@
       window.location = $(this).find(".assessment-link").attr("href");
     }
 
-
-
-
   for (var i = 0; i < boxes.length; i++) {
       boxes[i].addEventListener('click', getPage, false);
   }
 
-
-    //
-    // $(".assessment-popup").hide();
-    // $(".inner-text").hide();
-    //
-    // $(".to-do-box").click(function() {
-    //   $(".overlay").show();
-    //   $(".assessment-popup").show();
-    //   loadStudents($(this));
-    // })
-    //
-    // $(".submit-btn").on("click", function() {
-    //   // Submit form
-    //   $(".overlay").hide();
-    //   $(".assessment-popup").hide();
-    //
-    // })
-    // $(".cancel-btn").on("click", function() {
-    //   // Submit form
-    //   $(".overlay").hide();
-    //   $(".assessment-popup").hide();
-    //
-    // })
-
-    //
-    // function loadStudents(assessmentBox) {
-    //   var names = ["Pete", "Carter", "Jonathan"]
-    //   var scores = ["0", "0", "0"]
-    //   var studentAssessment = $(".student-assessment");
-    //   console.log(studentAssessment.length)
-    //   for (i = 0; i < names.length; i++) {
-    //     var newAssessment = studentAssessment.clone()
-    //     newAssessment.find(".student strong").text(names[i] + "'s'");
-    //     newAssessment.find(".inner-text").text("Comment on " + names[i]);
-    //     newAssessment.find(".comment-input").attr("placeholder", "Comment on " + names[i]);
-    //     newAssessment.insertBefore(".cancel-btn");
-    //   }
-    //   studentAssessment.hide();
-    // }
-    //
-    //
-    // $(document).on("click", function(event) {
-    //   if (!$(event.target).closest(".comment-input").length) {
-    //
-    //   }
-    // })
   </script>
 </body>
 

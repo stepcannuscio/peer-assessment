@@ -7,11 +7,12 @@
 .popup {
   width: 50%;
   left: 25%;
+  top: 0;
+  margin: 5% 0;
 }
 
 .popup-subheader {
   color: #757575;
-  /* padding: 4% 0 0 0; */
   font-size: 17px;
   text-align: center;
 }
@@ -19,10 +20,18 @@
   color: #6a68f6;
   text-align: center;
 }
-.student {
+
+
+.question-text {
+  font-size: 18px;
+  margin: 0;
+  padding: 2% 1%;
+}
+
+.score-text {
   font-weight: 400;
   font-size: 17px;
-  padding-top: 4%;
+  padding: 3% 5% 1% 5%;
 }
 
 /* Slider */
@@ -61,14 +70,113 @@ input[type='range']::-webkit-slider-thumb {
 
 .slider-number {
   display: inline-block;
-  padding: 0 14.5% 0 1%;
+  padding: 0 16% 0 1%;
+  font-size: 1.3vw;
 }
-
 .slider-last {
   display: inline-block;
-  padding-left: 1%;
+  font-size: 1.5vw;
+  padding-right: 0;
+  margin: 0;
 }
+@media (max-width: 992px) {
+  .slider-number, .slider-last {
+    font-size: 1.5vw;
+  }
+  .popup {
+    width: 60%;
+    left: 20%;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .slider-number, .slider-last {
+    font-size: 2vw;
+  }
+  .popup {
+    width: 85%;
+    left: 8%;
+  }
+}
+
+@media (max-width: 500px) {
+  .slider-number {
+    font-size: 3vw;
+    padding: 0 15% 0 1%;
+  }
+  .slider-last {
+    font-size: 2.5vw;
+  }
+  .popup {
+    width: 100%;
+    left: 0%;
+  }
+}
+
 
 .popup-btn {
   padding-left: 50%;
+}
+
+#submit-student, #cancel-student {
+  position: relative;
+  right: 0;
+  left: 34%;
+}
+
+/* #cancel-student {
+  position: relative;
+  right: 0;
+  left: %;
+} */
+/* Assess Peer Home */
+
+select {
+  width: 50%;
+  height: 50px;
+  font-size: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0;
+  background-color: #F2F4F4;
+  border: none;
+  border-bottom: 2px solid #6a68f6;
+  color: #6a68f6;
+  padding: 10px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding: 10px;
+}
+/* For IE <= 11 */
+select::-ms-expand {
+  display: none;
+}
+
+select:hover,
+select:focus {
+  color: #6a68f6;
+  background-color: #F2F4F4;
+  border: 2px solid #6a68f6;
+
+}
+
+.select-icon {
+  position: absolute;
+  left: 65%;
+  top: 42%;
+
+  text-align: center;
+  /* right: 4px; */
+  width: 30px;
+  height: 36px;
+  pointer-events: none;
+  /* border: 2px solid #962d22; */
+  padding-left: 5px;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.select-icon svg.icon {
+  transition: fill 0.3s ease;
+  fill: white;
 }
