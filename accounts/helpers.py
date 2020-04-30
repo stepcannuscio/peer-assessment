@@ -74,11 +74,9 @@ def get_student_assessments(request, course):
     course_assessments = Course_Assessment.objects.filter(course = course).select_related('assessment')
 
     assessments = []
-
     for assessment in course_assessments:
-        student_assessment = Assessment_Completion.objects.filter(user_id=current_user).filter(assessment=assessment.assessment_id)
+        student_assessment = Assessment_Completion.objects.filter(user_id=current_user).filter(assessment_id=assessment.assessment_id)
         assessments += student_assessment
-
     return assessments
 
 def get_student_dashboard(request, course):
@@ -106,7 +104,6 @@ def get_peer_assessments(request, course, completed=False, team_info=False):
             return todo_assessments, missed_assessments
     else:
         completed_assessments = get_complete_assessments(student_assessments, teammates)
-
         editable_assessments = []
         for assessment in completed_assessments:
             if pytz.utc.localize(datetime.now()) < assessment.end_date:  # Not past due
@@ -120,6 +117,7 @@ def get_incomplete_assessments(assessments):
 
     for assessment in assessments:
         if assessment.is_completed == False:
+            
 
             if pytz.utc.localize(datetime.now()) > assessment.assessment.end_date:
                 # Past due - missed
@@ -140,6 +138,7 @@ def get_complete_assessments(assessments, teammates):
     for assessment in assessments:
         id = assessment.assessment.id
         if assessment.is_completed:
+
             if id not in assessment_log.keys():
                 assessment_log[id] = 1
             else:
@@ -162,7 +161,7 @@ def get_students_not_assessed(request, course, assessment_id):
     complete_teammates = []
 
     for teammate in teammates:
-        assessment = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student=teammate.user)
+        assessment = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student=teammate.user, course=course)
         if assessment.is_completed:
             complete_teammates.append(teammate.user)
     teammates = get_teammates(current_team.team.id, request.user, exclude=complete_teammates)

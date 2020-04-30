@@ -123,7 +123,11 @@ class Course(models.Model):
                 teammates = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=student.user.id).select_related('user')
 
                 for mate in teammates:
-                    Assessment_Completion(user = student.user, assessment=assessment, student=mate.user).save()
+                    try:
+                        Assessment_Completion(user = student.user, assessment=assessment, student=mate.user, course=self).save()
+                    except:
+                        pass
+
 
     def add_user(self, user):
         Course_Enrollment(course=self, user=user).save()
@@ -153,6 +157,12 @@ class Assessment_Completion(models.Model):
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
     student = models.ForeignKey('User',on_delete=models.CASCADE,related_name='student_assessment', default="")
+    course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='completion_courses', default="")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user','assessment','student','course'],name = 'unique_assessment_completion'),
+        ]
 
 class Instructor_Assessment(models.Model):
     assessment_completion = models.ForeignKey('Assessment_Completion',on_delete=models.CASCADE,related_name='instructor_completion')
@@ -174,3 +184,9 @@ class Answer(models.Model):
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_answer')
     student = models.ForeignKey('User',on_delete=models.CASCADE,related_name='student_answer', default="")
     score = models.PositiveIntegerField(default=0, blank=True)
+    assessment_completion = models.ForeignKey('Assessment_Completion',on_delete=models.CASCADE,related_name='answer_completion', default="")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['question','user','student','assessment_completion'],name = 'unique_answer'),
+        ]

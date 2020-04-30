@@ -80,26 +80,37 @@ def save_answer(request, course_id, assessment_id, student_id):
         scores = request.POST.getlist('score')
         answers = request.POST.getlist('answer')
 
+        assessment_completion = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student_id=student_id, course_id=course_id)
+
         for i in range(len(scores)):
             question = Question.objects.get(id=questions[i])
 
-            update = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student_id=student_id)
-            if update:
-                # answer = Answers.objects.get(question=question, user=request.user, student_id=student_id) 
             if question.is_open_ended != True:
 
-                answer = Answer(question = question,
-                    user=request.user, student_id=student_id, score=scores[i])
-                update = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student_id=student_id)
-                update.is_completed = True
-                update.save()
-                answer.save()
+                if assessment_completion.is_completed: # Update
+                    update = Answer.objects.get(question=question, user=request.user, student_id=student_id, assessment_completion=assessment_completion)
+                    update.score = scores[i]
+                    update.save()
+                else:
+                    answer = Answer(question = question,
+                        user=request.user, student_id=student_id, score=scores[i], assessment_completion=assessment_completion)
+
+                    answer.save()
 
         for i in range(len(answers)):
             question = Question.objects.get(id=questions[i+len(scores)])
-            answer = Answer(answer=answers[i], question = question,
-                user=request.user, student_id=student_id)
-            answer.save()
+
+            if assessment_completion.is_completed: # Update
+                update = Answer.objects.get(question=question, user=request.user, student_id=student_id, assessment_completion=assessment_completion)
+                update.answer = answers[i]
+                update.save()
+            else:
+                answer = Answer(answer=answers[i], question = question,
+                    user=request.user, student_id=student_id, assessment_completion=assessment_completion)
+                answer.save()
+
+        assessment_completion.is_completed = True
+        assessment_completion.save()
 
         messages.success(request, f'Successfully completed assessment')
 
