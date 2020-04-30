@@ -180,3 +180,23 @@ select:focus {
   transition: fill 0.3s ease;
   fill: white;
 }
+
+.section-header {
+  color: #6a68f6;
+  font-size: 20px;
+}
+
+#plus-btn, #minus-btn {
+  background-color: #6a68f6;
+  color: white;
+  border-radius: 50%;
+  position: relative;
+  /* left: 50%; */
+  /* bottom: 2%; */
+  margin: 10% 0;
+  transition: transform .2s;
+}
+
+#plus-btn:hover {
+  transform: scale(1.2);
+}

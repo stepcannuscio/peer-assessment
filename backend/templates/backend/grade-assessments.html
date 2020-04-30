@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Assess Peer</title>
+
+  {% load static %}
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/assess-peer.css' %}">
+
+
+  <!-- Font Awesome -->
+  <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js"></script>
+
+  <!-- Bootstrap Scripts -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+</head>
+
+<body>
+
+  <div class="assessment-popup popup border-shadow">
+    <h3 class="popup-header">{{ assessment.assessment }}</h3>
+    <h4 class="popup-subheader"><span style="color:#6a68f6;">{{ assessment.user.name }} {{ assessment.user.surname }}</span>'s assessment for <span style="color:#6a68f6;">{{ assessment.student.name }} {{ assessment.student.surname }}</span></h4>
+    <hr>
+    <h4 class="section-header">Results: </h4>
+    <form action="{% url 'grade-assessment' course.id assessment.id %}" method="post">
+      {% csrf_token %}
+
+      {% for answer in answers %}
+
+
+      <hr>
+      <input class="instructor-assessment-id" type="text" name="instructor-assessment-id" value="{{ instructor_assessment.id }}">
+
+      <strong>
+        <p class="question-text">{{ forloop.counter }}) {{ answer.question.question }}</p>
+      </strong>
+      {% if answer.question.is_open_ended %}
+      <p class="answer-text"> {{ answer.answer }}</p>
+      {% else %}
+      <p class="score-text"> {{ answer.score }}</p>
+      {% endif %}
+      {% endfor %}
+      <hr>
+      <h4 class="section-header">Submit Grade: </h4>
+      <hr>
+
+      <input class="grade-input" name="grade" type="text" placeholder="Grade"><br><br>
+
+      <input class="comment-input" name="comment" type="text" placeholder="Comment">
+
+
+      <input id="submit-student" class="change-password-btn btn btn-link" type="submit" value="SUBMIT">
+      <input id="cancel-student" class="logout-btn btn btn-link" type="button" value="CANCEL">
+  </form>
+
+  </div>
+
+  <a class="courses-btn" href="{% url 'all-assessments' course.id %}">BACK</a>
+
+
+  <script>
+    $(".instructor-assessment-id").hide();
+    $("#cancel-student").on("click", function() {
+      window.location = "{% url 'all-assessments' course.id %}"
+    })
+  </script>
+</body>
+
+</html>
