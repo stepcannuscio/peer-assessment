@@ -60,42 +60,24 @@
         <div id="to-grade-section">
           <h1>To Grade</h1>
           <div class="row">
+            {% for assessment in assessments_to_grade %}
             <div class="col-lg-6 col-md-6">
               <div class="to-grade-box box">
-                <h2 class="student">Pedro</h2>
-                <strong>Team:</strong>
-                <h3 class="team"></h3>
-                <strong>Assessment:</strong>
-                <h3 class="assessment"></h3>
-                <strong>Overall Grade:</strong>
-                <h3 class="overall-grade"></h3>
+                <h2 class="student">{{ assessment.user.name }} {{ assessment.user.surname }}</h2>
+                {% for team in teams %}
+                {% if team.user == assessment.user  %}
+                <h3 class="team"><strong>Team: </strong>{{ team.team.name  }}</h3>
+                {% endif %}
+                {% endfor %}
+                <h3 class="assessment"><strong>Assessment: </strong>{{ assessment.assessment }}</h3>
+                <h3 class="student"><strong>For Student: </strong>{{ assessment.student.name }} {{ assessment.student.surname }}</h3>
+                <a class="assessment-link" href="{% url 'grade-assessment-home' course.id assessment.id %}"></a>
+                <!-- <strong>Overall Grade:</strong>
+                <h3 class="overall-grade"></h3> -->
                 <p>Click here to start</p>
               </div>
             </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="to-grade-box box">
-                <h2 class="student">John</h2>
-                <strong>Team:</strong>
-                <h3 class="team"></h3>
-                <strong>Assessment:</strong>
-                <h3 class="assessment"></h3>
-                <strong>Overall Grade:</strong>
-                <h3 class="overall-grade"></h3>
-                <p>Click here to start</p>
-              </div>
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="to-grade-box box">
-                <h2 class="student">Adam</h2>
-                <strong>Team:</strong>
-                <h3 class="team"></h3>
-                <strong>Assessment:</strong>
-                <h3 class="assessment"></h3>
-                <strong>Overall Grade:</strong>
-                <h3 class="overall-grade"></h3>
-                <p>Click here to start</p>
-              </div>
-            </div>
+            {% endfor %}
           </div>
 
         </div>
@@ -109,56 +91,58 @@
 
 
           <div class="row">
+          {% for assessment in assessments %}
             <div class="col-lg-6 col-md-6">
-              <div class="all-box box">
-                <h2 class="assessment-title">Delivery 5 Assessments</h2>
-                <strong>Due Date:</strong>
-                <h3 class="due-date"></h3>
-                <strong>Class Overall:</strong>
-                <h3 class="class-overall"></h3>
+              <div class="assessment-box box">
+                <h2 class="assessment-name">{{ assessment.assessment.name }}</h2>
+                <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.assessment.end_date }}</h3>
+                <h3 class="overall"><strong>Class Overall: </strong></h3>
+                {% if assessment.assessment.is_published == False %}
+                  <p>Click to add questions</p>
+                  <a class="assessment-link" href="{% url 'view-questions' course.id assessment.assessment.id %}"></a>
+                {% else %}
+          
+                {% endif %}
               </div>
-
             </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="all-box box">
-                <h2 class="assessment-title">Delivery 5 Assessments</h2>
-                <strong>Due Date:</strong>
-                <h3 class="due-date"></h3>
-                <strong>Class Overall:</strong>
-                <h3 class="class-overall"></h3>
-              </div>
-
-            </div>
-            <div class="col-lg-6 col-md-6">
-              <div class="all-box box">
-                <h2 class="assessment-title">Delivery 5 Assessments</h2>
-                <strong>Due Date:</strong>
-                <h3 class="due-date"></h3>
-                <strong>Class Overall:</strong>
-                <h3 class="class-overall"></h3>
-              </div>
-
-            </div>
+            {% endfor %}
           </div>
         </div>
-
-
-
       </div>
+
+      <!-- <div class="container-fluid">
+        <div id="questions-section">
+          <h1>All Questions</h1>
+
+          <button type="button" id="create-question" class="btn btn-light create-button">CREATE <br />QUESTION</button>
+
+
+          <div class="row">
+          {% for question in questions %}
+            <div class="col-lg-6 col-md-6">
+              <div class="question-box box">
+                <h3 class="question-name"><strong>Question: </strong>{{ question.question.question }}</h3>
+                <h3 class="question-info"><strong>Is Open Ended: </strong>{{ question.question.is_open_ended }}</h3>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div> -->
     </div>
 
 
     <a class="change-password-btn" href="{% url 'change-password' %}">CHANGE PASSWORD</a>
     <a class="logout-btn" href="{% url 'log_out' %}">LOGOUT</a>
     <a class="courses-btn" href="{% url 'courses' %}">COURSES</a>
-    
+
   </div>
   <div class="create-assessment-popup popup">
     <div class="content">
       <h3 class="popup-header">Create a new Assessment</h3>
       <p class="popup-subheader">Fill out the following information...</p>
 
-      <form method="post">
+      <form action="{% url 'create-assessment' course.id %}"method="post">
         {% csrf_token %}
         <input type="text" name="assessment-name" placeholder="Assessment Name">
         <h4>Start Date: </h4><input type="datetime-local" id="start-date" name="start-date">
@@ -169,56 +153,103 @@
     </div>
   </div>
 
-  <div class="grade-student-popup popup">
+  <div class="create-question-popup popup">
     <div class="content">
-      <h3 class="popup-header">Pedro</h3>
-      <p class="popup-subheader">Please review the students overall scores and leave a comment.</p>
+      <h3 class="popup-header">Create a new Question</h3>
+      <p class="popup-subheader">Fill out the following information...</p>
 
-      <form method="post">
+      <form action="{% url 'create-question' course.id %}"method="post">
         {% csrf_token %}
-        <input type="text" name="comment" placeholder="Comment">
-        <input id="cancel-comment" class="cancel-btn btn btn-link" type="button" value="CANCEL">
-        <input id="submit-comment" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
+        <input type="text" name="question" placeholder="Question">
+        <select id="bools" name="bool">
+          <option value="True">True</option>
+          <option value="False">False</option>
+        </select><br>
+        <input id="cancel-assessment" class="cancel-btn btn btn-link" type="button" value="CANCEL">
+        <input id="submit-assessment" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
       </form>
     </div>
   </div>
 
+  <!-- <div class="grade-student-popup popup">
+    <div class="content">
+      <h3 class="popup-header">Pedro</h3>
+      <p class="popup-subheader">Please review the students overall scores and leave a comment.</p>
+
+      <form action="grade-student" method="post">
+        {% csrf_token %}
+        <input type="text" name="comment" placeholder="Comment">
+
+        <input id="cancel-comment" class="cancel-btn btn btn-link" type="button" value="CANCEL">
+        <input id="submit-comment" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
+      </form>
+    </div>
+  </div>  -->
+
   <script type="text/javascript">
-    $(".create-assessment-popup").hide();
-    $(".grade-student-popup").hide();
 
-    $("#create-assessment").click(function() {
-      $(".overlay").show();
-      $(".create-assessment-popup").show();
-    })
 
-    $(".to-grade-box").click(function() {
-      $(".overlay").show();
-      $(".grade-student-popup").show();
-    })
+  var toGradeBoxes = document.getElementsByClassName("to-grade-box");
+  var assessmentBoxes = document.getElementsByClassName("assessment-box");
 
-    $("#submit-assessment").on("click", function() {
-      // Submit form
-      $(".overlay").hide();
-      $(".create-assessment-popup").hide();
-    })
+  var getPage = function() {
+      window.location = $(this).find(".assessment-link").attr("href");
+    }
+  // var showAssessment = function() {
+  //     window.location = $(this).find(".assessment-link").attr("href");
+  //   }
 
-    $("#submit-comment").on("click", function() {
-      // Submit form
-      $(".overlay").hide();
-      $(".grade-student-popup").hide();
-    })
+  for (var i = 0; i < toGradeBoxes.length; i++) {
+      toGradeBoxes[i].addEventListener('click', getPage, false);
+  }
+  for (var i = 0; i < assessmentBoxes.length; i++) {
+      assessmentBoxes[i].addEventListener('click', getPage, false);
+  }
 
-    $("#cancel-assessment").on("click", function() {
-      $(".overlay").hide();
-      $(".create-assessment-popup").hide();
-    })
+  $(".create-assessment-popup").hide();
+  $(".create-question-popup").hide();
+  // $(".grade-student-popup").hide();
+  //
+  $("#create-assessment").click(function() {
+    $(".overlay").show();
+    $(".create-assessment-popup").show();
+  })
 
-    $("#cancel-comment").on("click", function() {
-      $(".overlay").hide();
-      $(".grade-student-popup").hide();
-    })
+  $("#create-question").click(function() {
+    $(".overlay").show();
+    $(".create-question-popup").show();
+  })
+
+  // $(".to-grade-box").click(function() {
+  //   $(".overlay").show();
+  //   $(".grade-student-popup").show();
+  // })
+  //
+  // $("#submit-assessment").on("click", function() {
+  //   // Submit form
+  //   $(".overlay").hide();
+  //   $(".create-assessment-popup").hide();
+  // })
+  //
+  // $("#submit-comment").on("click", function() {
+  //   // Submit form
+  //   $(".overlay").hide();
+  //   $(".grade-student-popup").hide();
+  // })
+  //
+  // $("#cancel-assessment").on("click", function() {
+  //   $(".overlay").hide();
+  //   $(".create-assessment-popup").hide();
+  // })
+  //
+  // $("#cancel-comment").on("click", function() {
+  //   $(".overlay").hide();
+  //   $(".grade-student-popup").hide();
+  // })
+
   </script>
+
+
 
 
 </body>

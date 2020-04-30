@@ -75,8 +75,9 @@ def get_student_assessments(request, course):
 
     assessments = []
     for assessment in course_assessments:
-        student_assessment = Assessment_Completion.objects.filter(user_id=current_user).filter(assessment_id=assessment.assessment_id)
-        assessments += student_assessment
+        if assessment.assessment.is_published:
+            student_assessment = Assessment_Completion.objects.filter(user_id=current_user, assessment_id=assessment.assessment_id)
+            assessments += student_assessment
     return assessments
 
 def get_student_dashboard(request, course):
@@ -117,7 +118,7 @@ def get_incomplete_assessments(assessments):
 
     for assessment in assessments:
         if assessment.is_completed == False:
-            
+
 
             if pytz.utc.localize(datetime.now()) > assessment.assessment.end_date:
                 # Past due - missed
@@ -167,6 +168,46 @@ def get_students_not_assessed(request, course, assessment_id):
     teammates = get_teammates(current_team.team.id, request.user, exclude=complete_teammates)
 
     return teammates, current_team
+
+def get_students_not_graded(user, course):
+    current_students = Course_Enrollment.objects.filter(course = course).exclude(user=user).select_related('user')
+    course_assessments = Course_Assessment.objects.filter(course = course).select_related('assessment')
+
+    assessment_completions = []
+    for assessment in course_assessments:
+        completed_assessments = Assessment_Completion.objects.filter(assessment_id=assessment.assessment_id, course=course, is_completed=True).select_related('assessment', 'user')
+        assessment_completions += completed_assessments
+
+    assessments_completed = []
+
+    user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='team_users')
+    team = models.ForeignKey('Team',on_delete=models.CASCADE,related_name='teams')
+    is_active = models.BooleanField(default = True)
+
+    teams = []
+    for student in current_students:
+        team_enrollments = Team_Enrollment.objects.filter(user=student.user, is_active=True).select_related('user', 'team')
+        for team in team_enrollments:
+            if team.team.course == course:
+                teams.append(team)
+
+
+    for assessment in assessment_completions:
+        try:
+            instructor_assessment = Instructor_Assessment.objects.get(assessment_completion = assessment)
+            if instructor_assessment.is_graded != True: # not graded
+                assessments_completed.append(assessment)
+        except:
+            instructor_assessment = Instructor_Assessment(assessment_completion = assessment)
+            instructor_assessment.save()
+            assessments_completed.append(assessment)
+
+
+    return assessments_completed, teams
+
+# def get_assessment_detail(course, assessment_completion_id):
+
+
 
 def get_questions(assessment_id):
     questions = Question_Assessment.objects.filter(assessment=assessment_id).select_related('question')
