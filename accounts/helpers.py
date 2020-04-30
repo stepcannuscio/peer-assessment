@@ -106,7 +106,12 @@ def get_peer_assessments(request, course, completed=False, team_info=False):
             return todo_assessments, missed_assessments
     else:
         completed_assessments = get_complete_assessments(student_assessments, teammates)
-        return completed_assessments
+
+        editable_assessments = []
+        for assessment in completed_assessments:
+            if pytz.utc.localize(datetime.now()) < assessment.end_date:  # Not past due
+                editable_assessments.append(assessment)
+        return completed_assessments, editable_assessments
 
 def get_incomplete_assessments(assessments):
     missed_assessments = []
@@ -158,7 +163,6 @@ def get_students_not_assessed(request, course, assessment_id):
 
     for teammate in teammates:
         assessment = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student=teammate.user)
-        print(assessment)
         if assessment.is_completed:
             complete_teammates.append(teammate.user)
     teammates = get_teammates(current_team.team.id, request.user, exclude=complete_teammates)

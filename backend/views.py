@@ -49,7 +49,12 @@ def assess_peer_home(request, course_id, assessment_id):
     course = get_object_or_404(Course, id=course_id)
     assessment = get_object_or_404(Peer_Assessment, id=assessment_id)
 
-    teammates, current_team = get_students_not_assessed(request, course, assessment_id)
+    if request.META['HTTP_REFERER'].endswith("completed-assessments"):
+        print('completedddd')
+        current_team = get_current_team(request.user, course)
+        teammates = get_teammates(current_team.team.id, request.user)
+    else:
+        teammates, current_team = get_students_not_assessed(request, course, assessment_id)
 
     return render(request, 'backend/assess-peer-home.html', {
         'students': teammates,'assessment': assessment, 'course': course,
@@ -78,7 +83,11 @@ def save_answer(request, course_id, assessment_id, student_id):
         for i in range(len(scores)):
             question = Question.objects.get(id=questions[i])
 
+            update = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student_id=student_id)
+            if update:
+                # answer = Answers.objects.get(question=question, user=request.user, student_id=student_id) 
             if question.is_open_ended != True:
+
                 answer = Answer(question = question,
                     user=request.user, student_id=student_id, score=scores[i])
                 update = Assessment_Completion.objects.get(user=request.user, assessment_id=assessment_id, student_id=student_id)
@@ -107,10 +116,10 @@ def completed_assessments(request, course_id):
     storage = messages.get_messages(request)
     course = get_object_or_404(Course, id=course_id)
 
-    completed_assessments = get_peer_assessments(request, course, completed=True)
+    completed_assessments, editable_assessments = get_peer_assessments(request, course, completed=True)
 
     return render(request, 'backend/completed-assessments.html', {'course': course,
-        'completed_assessments': completed_assessments})
+        'completed_assessments': completed_assessments, 'editable_assessments': editable_assessments})
     args = {'message': storage}
 
 
