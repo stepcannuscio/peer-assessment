@@ -68,11 +68,14 @@
             <div class="box border-shadow">
 
 
-              <h2 class="assessment-name">{{ assessment.assessment }}</h2><br>
-              <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.assessment.end_date }}</h3><br>
+              <h2 class="assessment-name">{{ assessment }}</h2><br>
+              <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.end_date }}</h3><br>
               <h3 class="overall"><strong>Overall: </strong></h3><br>
               <h3 class="note"><strong>Note: </strong></h3><br>
-
+              {% if assessment in editable_assessments %}
+              <p class="edit-text">Click here to edit</p>
+              <a class="assessment-link" href="{% url 'assess-peer-home' course.id assessment.id %}"></a>
+              {% endif %}
             </div>
           </div>
           {% endfor %}
@@ -86,6 +89,21 @@
 
   </div>
 
+  <script>
+  var boxes = document.getElementsByClassName("box");
+
+  var getPage = function() {
+    var link = $(this).find(".assessment-link").attr("href");
+    if (link) {
+      window.location = link;
+      }
+    }
+
+  for (var i = 0; i < boxes.length; i++) {
+      boxes[i].addEventListener('click', getPage, false);
+  }
+
+  </script>
 
 </body>
 

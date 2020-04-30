@@ -7,6 +7,7 @@
 
   {% load static %}
 
+
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
 
@@ -29,65 +30,57 @@
 
   <div class="assessment-popup popup border-shadow">
     <h3 class="popup-header">{{ assessment }}</h3>
-    <p class="popup-subheader">Please fill out the peer assesment for each of your teammates</p>
+    <p class="popup-subheader">Please fill out the peer assesment for <strong><span style="color:#6a68f6;">{{ student.name }} {{ student.surname }}</span></strong></p>
 
-    <hr>
-    <select id="students" name="student">
-    {% for student in students %}
-     <option value="{{ student.id }}">{{ student.user.name }} {{ student.user.surname }}</option>
-  {% endfor %}
-     </select><br>
+    <form action="{% url 'save-answer' course.id assessment.id student.id %}" method="post">
+      {% csrf_token %}
+      {% for question in not_open_ended %}
 
+      <hr>
+      <input class="question-id" type="text" name="question" value="{{ question.question.id }}">
 
-     <form action="{% url 'save-answer' course.id assessment.id student.id %}" method="post">
-       {% csrf_token %}
-       {% for question in not_open_ended %}
-       <hr>
-        <input class="question-id" type="text" name="question" value="{{ question.question.id }}">
-        <p class="question-text">{{ question.question.question }}</p>
-       <h4 class="student"><strong></strong> Score. (0=Lowest / 5=Best)</h4>
-       <div class="range-wrap">
-         <input id="slider" name="score" type="range" min="0" max="5" step="1" value="0">
-         <div class="slider-numbers">
-           <p class="slider-number">0</p>
-           <p class="slider-number">1</p>
-           <p class="slider-number">2</p>
-           <p class="slider-number">3</p>
-           <p class="slider-number">4</p>
-           <p class="slider-last">5</p>
-         </div>
-       </div>
-
-       {% endfor %}
-
-
-
-
-
-
-
+      <strong>
+        <p class="question-text">{{ forloop.counter }}) {{ question.question.question }}</p>
+      </strong>
+      <h4 class="score-text"><strong></strong> Score. (0=Lowest / 5=Best)</h4>
+      <div class="range-wrap">
+        <input id="slider" name="score" type="range" min="0" max="5" step="1" value="0">
+        <div class="slider-numbers">
+          <p class="slider-number">0</p>
+          <p class="slider-number">1</p>
+          <p class="slider-number">2</p>
+          <p class="slider-number">3</p>
+          <p class="slider-number">4</p>
+          <p class="slider-last">5</p>
+        </div>
+      </div>
+      {% endfor %}
 
 
       {% for question in open_ended %}
+      {% with questionLength=not_open_ended|length%}
       <input class="question-id" type="text" name="question" value="{{ question.question.id }}">
-      <p class=question-text>{{ question.question.question }}</p>
+      <hr>
+      <strong>
+        <p class=question-text>{{ forloop.counter|add:questionLength}}) {{ question.question.question }}</p>
+      </strong>
       <input class="comment-input" name="answer" type="text" placeholder="Comment">
-
+      {% endwith %}
       {% endfor %}
-      <input id="cancel-student" class="cancel-btn btn btn-link" type="button" value="CANCEL">
-      <input id="submit-student" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
 
-
-      </div>
-         </form>
-        <a class="courses-btn" href="{% url 'peer-assessments' course.id %}">PEER ASSESSMENTS</a>
-
-
-
+      <input id="submit-student" class="change-password-btn btn btn-link" type="submit" value="SUBMIT">
+      <input id="cancel-student" class="logout-btn btn btn-link" type="button" value="CANCEL">
   </div>
-<script>
-  $(".question-id").hide();
-</script>
+  </form>
+  <a class="courses-btn" href="{% url 'assess-peer-home' course.id assessment.id %}">BACK</a>
+  </div>
+
+  <script>
+    $(".question-id").hide();
+    $("#cancel-student").on("click", function() {
+      window.location = "{% url 'assess-peer-home' course.id assessment.id %}"
+    })
+  </script>
 </body>
 
 </html>

@@ -5,7 +5,6 @@ from datetime import datetime
 from django.utils.crypto import get_random_string
 import pytz
 
-# Create your models here.
 class MyUserManager(BaseUserManager):
     def create_user(self,name,surname,email,eagle_id,password = None):
         if not email:
@@ -52,9 +51,6 @@ class MyUserManager(BaseUserManager):
     def get_by_natural_key(self,email_):
         return self.get(email=email_)
 
-
-
-
 class User(AbstractBaseUser,PermissionsMixin):
     name = models.CharField(max_length = 30)
     surname = models.CharField(max_length = 30)
@@ -77,9 +73,11 @@ class User(AbstractBaseUser,PermissionsMixin):
             raise ValidationError("Eagle ID must be 8 integers")
     def make_random_password(self,length = 15,allowed_chars = '1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM'):
         return get_random_string(length,allowed_chars)
+
 class Course_Enrollment(models.Model):
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='enrolled_courses')
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='enrolled_users')
+
 class Team_Enrollment(models.Model):
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='team_users')
     team = models.ForeignKey('Team',on_delete=models.CASCADE,related_name='teams')
@@ -87,11 +85,7 @@ class Team_Enrollment(models.Model):
 
 class Team(models.Model): #each team can be of 2 or more students
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='team_course',default = "")
-    #user = models.ForeignKey('User',on_delete=models.CASCADE,related_name = 'team_users')
     name = models.CharField(max_length = 50)
-
-
-
 
     class Meta:
         constraints = [ # Make sure the combo of team name and course are unique
@@ -100,15 +94,10 @@ class Team(models.Model): #each team can be of 2 or more students
     def add(self,user):
         Team_Enrollment(user=user,team = self).save()
 
-
-
     def __str__(self):
         return self.name
 
-
 class Course(models.Model):
-    #team = models.ForeignKey('Team',on_delete=CASCADE,related_name = 'teams')
-
     name = models.CharField(max_length = 30)
     code = models.CharField(max_length = 30)
     section_number = models.PositiveSmallIntegerField()
@@ -119,10 +108,10 @@ class Course(models.Model):
         constraints = [ # makes sure the combination of code, section_number, year, and sem_of_realization are unique
             models.UniqueConstraint(fields=['code','section_number','year','sem_of_realization'],name = 'unique_course'),
         ]
+
     def add_assessment(self, assessment):
         Course_Assessment(course = self, assessment=assessment).save()
         students = Course_Enrollment.objects.filter(course= self).select_related('user')
-
 
         for student in students:
             if student.user.is_staff == False:
@@ -133,9 +122,11 @@ class Course(models.Model):
                         course_team = team
                 teammates = Team_Enrollment.objects.filter(team=team.team.id).exclude(user=student.user.id).select_related('user')
 
-
                 for mate in teammates:
-                    Assessment_Completion(user = student.user, assessment=assessment, student=mate.user).save()
+                    try:
+                        Assessment_Completion(user = student.user, assessment=assessment, student=mate.user, course=self).save()
+                    except:
+                        pass
 
 
     def add_user(self, user):
@@ -150,7 +141,6 @@ class Course(models.Model):
 class Course_Assessment(models.Model):
     course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='peer_courses')
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="course_assessment")
-
 
 class Peer_Assessment(models.Model):
     name = models.CharField(max_length = 200,default="")
@@ -167,13 +157,18 @@ class Assessment_Completion(models.Model):
     assessment = models.ForeignKey('Peer_Assessment',on_delete=models.CASCADE,related_name="assessment_name")
     is_completed = models.BooleanField(default = False)
     student = models.ForeignKey('User',on_delete=models.CASCADE,related_name='student_assessment', default="")
+    course = models.ForeignKey('Course',on_delete=models.CASCADE,related_name='completion_courses', default="")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user','assessment','student','course'],name = 'unique_assessment_completion'),
+        ]
 
 class Instructor_Assessment(models.Model):
     assessment_completion = models.ForeignKey('Assessment_Completion',on_delete=models.CASCADE,related_name='instructor_completion')
     is_graded = models.BooleanField(default=False)
     grade = models.PositiveIntegerField(default=0)
     comment = models.TextField(default="")
-
 
 class Question_Assessment(models.Model):
     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='questions')
@@ -182,14 +177,16 @@ class Question_Assessment(models.Model):
 class Question(models.Model):
     question = models.CharField(max_length = 1000)
     is_open_ended = models.BooleanField(default=False)
-#
-# class Score(models.Model):
-#     score = models.PositiveIntegerField()
-#     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_score')
-#     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_score')
+
 class Answer(models.Model):
     answer = models.TextField(default="", blank=True)
     question = models.ForeignKey('Question',on_delete=models.CASCADE,related_name='question_answer')
     user = models.ForeignKey('User',on_delete=models.CASCADE,related_name='user_answer')
     student = models.ForeignKey('User',on_delete=models.CASCADE,related_name='student_answer', default="")
     score = models.PositiveIntegerField(default=0, blank=True)
+    assessment_completion = models.ForeignKey('Assessment_Completion',on_delete=models.CASCADE,related_name='answer_completion', default="")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['question','user','student','assessment_completion'],name = 'unique_answer'),
+        ]

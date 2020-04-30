@@ -36,7 +36,7 @@ def log_in(request):
         elif request.META['HTTP_REFERER'].endswith('student-login') and user.is_staff != True:
             login(request, user)
             print('logged in')
-            
+
             return redirect('/courses')
 
         else:

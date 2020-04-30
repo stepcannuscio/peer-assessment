@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Assess Peer Home</title>
+  {% load static %}
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/assess-peer.css' %}">
+
+
+  <!-- Font Awesome -->
+  <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js"></script>
+
+  <!-- Bootstrap Scripts -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  <style>
+    .popup {
+      text-align: center;
+    }
+    #submit-btn {
+      right: 0;
+      position: relative;
+      margin: 2%;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="assessment-popup popup border-shadow">
+    <h3 class="popup-header">{{ assessment }}</h3>
+    <p class="popup-subheader">Please choose which teammate to assess:</p>
+    <hr>
+
+
+
+    <form action="{% url 'assess-peer' course.id assessment.id %}" method="post">
+
+      {% csrf_token %}
+      <select id="students" name="student">
+
+        {% for student in students %}
+        <option value="{{ student.user.id }}">{{ student.user.name }} {{ student.user.surname }}</option>
+        {% endfor %}
+      </select>
+      <div class="select-icon">
+        <svg focusable="false" viewBox="0 0 104 128" width="25" height="35" class="icon">
+          <i class="fas fa-angle-down arrow"></i>
+        </svg>
+        </div>
+      <br>
+      <hr>
+      <input id="submit-btn" class="change-password-btn btn btn-link" type="submit" value="CONTINUE">
+    </form>
+
+
+  </div>
+  <a class="courses-btn" href="{% url 'peer-assessments' course.id %}">PEER ASSESSMENTS</a>
+
+</body>
+
+
+</html>
