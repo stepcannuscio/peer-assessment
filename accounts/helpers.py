@@ -85,12 +85,81 @@ def get_student_dashboard(request, course):
     teammates = get_teammates(current_team.team.id, request.user)
     student_assessments = get_student_assessments(request, course)
 
-    completed_assessments = get_complete_assessments(student_assessments, teammates)
+    completed_assessments, assessments_length = get_complete_assessments(student_assessments, teammates)
     todo_assessments, missed_assessments = get_incomplete_assessments(student_assessments)
 
     total_assessments = completed_assessments + todo_assessments + missed_assessments
 
     return total_assessments, completed_assessments, todo_assessments, missed_assessments
+
+def get_professor_dashboard(course):
+    # Total assessments completed:
+    # 1) get all assessments for this course
+    # 2) get all assessment completions for this course and filter by is_completed=True
+    # 3) total_assessments_completed = length of that array
+    assessment_completions = get_course_assessments(course)
+    total_assessments = len(assessment_completions)
+
+    completed_assessments = get_course_assessments(course, is_completed=True)
+    total_assessments_completed = len(completed_assessments)
+
+    assessments_to_grade = 0
+    for assessment in completed_assessments:
+        try:
+            instructor_assessment = Instructor_Assessment.objects.get(assessment_completion = assessment)
+            if instructor_assessment.is_graded != True: # not graded
+                # assessments_to_grade.append(assessment)
+                assessments_to_grade += 1
+        except:
+            # assessments_to_grade.append(assessment)
+            assessments_to_grade += 1
+
+    assessments_missing = 0
+    # dup_assessments = []
+
+    incomplete_assessments = get_course_assessments(course, is_completed=False)
+
+    for assessment in incomplete_assessments:
+        if pytz.utc.localize(datetime.now()) > assessment.assessment.end_date: # Past due
+            print(assessment)
+            # if assessment.assessment not in dup_assessments:
+            assessments_missing += 1
+                # dup_assessments.append(assessment.assessment)
+
+    print(f'Total Assessments Completed: {total_assessments_completed}')
+    print(f'Total Assessments: {total_assessments}')
+    print(f'Assessments to Grade: {assessments_to_grade}')
+    print(f'Assessments Missing: {assessments_missing}')
+
+
+    # Total assessments:
+    # 1) length of all assessments for this course
+
+    # Assessments to grade:
+    # 1) get all assessments for this course
+    # 2) get all assessment completions for this course and filter by is_completed=True
+    # 3) loop through those assessment completions to see if an instructor assessment exists for it
+    #    if it does not exist then add +1 to assessments_to_grade
+    #    if it does exist, check if it is graded, if it's not add +1 to assessments_to_grade
+
+    # Assessments missing:
+    # 1) get all assessments for this course
+    # 2) check which assessments are past due
+    # 3) loop through the past due assessments to get their corresponding assessment_completions
+    #    to see if they are completed --> if not completed, then assessments missing is +1
+
+    # students = Course_Enrollment.objects.filter(course=course).select_related('user')
+    #
+    #
+    # completed_assessments, assessments_length = get_complete_assessments(assessment_completions, students)
+    # todo_assessments, missed_assessments = get_incomplete_assessments(assessment_completions)
+
+
+    return total_assessments_completed, total_assessments, assessments_to_grade, assessments_missing
+
+
+
+
 
 def get_peer_assessments(request, course, completed=False, team_info=False):
     current_team = get_current_team(request.user, course)
@@ -104,7 +173,7 @@ def get_peer_assessments(request, course, completed=False, team_info=False):
         else:
             return todo_assessments, missed_assessments
     else:
-        completed_assessments = get_complete_assessments(student_assessments, teammates)
+        completed_assessments, assessments_length = get_complete_assessments(student_assessments, teammates)
         editable_assessments = []
         for assessment in completed_assessments:
             if pytz.utc.localize(datetime.now()) < assessment.end_date:  # Not past due
@@ -153,7 +222,7 @@ def get_complete_assessments(assessments, teammates):
             assessment = Peer_Assessment.objects.get(pk=key)
             completed_assessments.append(assessment)
 
-    return completed_assessments
+    return completed_assessments, len(assessment_log.keys())
 
 def get_students_not_assessed(request, course, assessment_id):
     current_team = get_current_team(request.user, course)
@@ -171,12 +240,8 @@ def get_students_not_assessed(request, course, assessment_id):
 
 def get_students_not_graded(user, course):
     current_students = Course_Enrollment.objects.filter(course = course).exclude(user=user).select_related('user')
-    course_assessments = Course_Assessment.objects.filter(course = course).select_related('assessment')
 
-    assessment_completions = []
-    for assessment in course_assessments:
-        completed_assessments = Assessment_Completion.objects.filter(assessment_id=assessment.assessment_id, course=course, is_completed=True).select_related('assessment', 'user')
-        assessment_completions += completed_assessments
+    assessment_completions = get_course_assessments(course, is_completed=True)
 
     assessments_completed = []
 
@@ -205,8 +270,18 @@ def get_students_not_graded(user, course):
 
     return assessments_completed, teams
 
-# def get_assessment_detail(course, assessment_completion_id):
+def get_course_assessments(course, is_completed=None):
+    course_assessments = Course_Assessment.objects.filter(course = course).select_related('assessment')
 
+    assessment_completions = []
+    for assessment in course_assessments:
+        if is_completed != None:
+            completed_assessments = Assessment_Completion.objects.filter(assessment_id=assessment.assessment_id, course=course, is_completed=is_completed).select_related('assessment', 'user')
+        else:
+            completed_assessments = Assessment_Completion.objects.filter(assessment_id=assessment.assessment_id, course=course).select_related('assessment')
+        assessment_completions += completed_assessments
+
+    return assessment_completions
 
 
 def get_questions(assessment_id):

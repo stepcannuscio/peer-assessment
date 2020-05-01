@@ -36,7 +36,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarToggler">
 
-          <!-- Nav Bar -->
           <ul class="navbar-nav fixed flex-column">
             <li class="nav-item">
               <i class="fas fa-tachometer-alt navigation-img"></i>
@@ -101,7 +100,7 @@
                   <p>Click to add questions</p>
                   <a class="assessment-link" href="{% url 'view-questions' course.id assessment.assessment.id %}"></a>
                 {% else %}
-          
+
                 {% endif %}
               </div>
             </div>
@@ -110,25 +109,6 @@
         </div>
       </div>
 
-      <!-- <div class="container-fluid">
-        <div id="questions-section">
-          <h1>All Questions</h1>
-
-          <button type="button" id="create-question" class="btn btn-light create-button">CREATE <br />QUESTION</button>
-
-
-          <div class="row">
-          {% for question in questions %}
-            <div class="col-lg-6 col-md-6">
-              <div class="question-box box">
-                <h3 class="question-name"><strong>Question: </strong>{{ question.question.question }}</h3>
-                <h3 class="question-info"><strong>Is Open Ended: </strong>{{ question.question.is_open_ended }}</h3>
-              </div>
-            </div>
-            {% endfor %}
-          </div>
-        </div>
-      </div> -->
     </div>
 
 
@@ -153,39 +133,6 @@
     </div>
   </div>
 
-  <div class="create-question-popup popup">
-    <div class="content">
-      <h3 class="popup-header">Create a new Question</h3>
-      <p class="popup-subheader">Fill out the following information...</p>
-
-      <form action="{% url 'create-question' course.id %}"method="post">
-        {% csrf_token %}
-        <input type="text" name="question" placeholder="Question">
-        <select id="bools" name="bool">
-          <option value="True">True</option>
-          <option value="False">False</option>
-        </select><br>
-        <input id="cancel-assessment" class="cancel-btn btn btn-link" type="button" value="CANCEL">
-        <input id="submit-assessment" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
-      </form>
-    </div>
-  </div>
-
-  <!-- <div class="grade-student-popup popup">
-    <div class="content">
-      <h3 class="popup-header">Pedro</h3>
-      <p class="popup-subheader">Please review the students overall scores and leave a comment.</p>
-
-      <form action="grade-student" method="post">
-        {% csrf_token %}
-        <input type="text" name="comment" placeholder="Comment">
-
-        <input id="cancel-comment" class="cancel-btn btn btn-link" type="button" value="CANCEL">
-        <input id="submit-comment" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
-      </form>
-    </div>
-  </div>  -->
-
   <script type="text/javascript">
 
 
@@ -195,9 +142,6 @@
   var getPage = function() {
       window.location = $(this).find(".assessment-link").attr("href");
     }
-  // var showAssessment = function() {
-  //     window.location = $(this).find(".assessment-link").attr("href");
-  //   }
 
   for (var i = 0; i < toGradeBoxes.length; i++) {
       toGradeBoxes[i].addEventListener('click', getPage, false);
@@ -207,45 +151,16 @@
   }
 
   $(".create-assessment-popup").hide();
-  $(".create-question-popup").hide();
-  // $(".grade-student-popup").hide();
-  //
+
   $("#create-assessment").click(function() {
     $(".overlay").show();
     $(".create-assessment-popup").show();
   })
 
-  $("#create-question").click(function() {
-    $(".overlay").show();
-    $(".create-question-popup").show();
+  $("#cancel-assessment").on("click", function() {
+    $(".overlay").hide();
+    $(".create-assessment-popup").hide();
   })
-
-  // $(".to-grade-box").click(function() {
-  //   $(".overlay").show();
-  //   $(".grade-student-popup").show();
-  // })
-  //
-  // $("#submit-assessment").on("click", function() {
-  //   // Submit form
-  //   $(".overlay").hide();
-  //   $(".create-assessment-popup").hide();
-  // })
-  //
-  // $("#submit-comment").on("click", function() {
-  //   // Submit form
-  //   $(".overlay").hide();
-  //   $(".grade-student-popup").hide();
-  // })
-  //
-  // $("#cancel-assessment").on("click", function() {
-  //   $(".overlay").hide();
-  //   $(".create-assessment-popup").hide();
-  // })
-  //
-  // $("#cancel-comment").on("click", function() {
-  //   $(".overlay").hide();
-  //   $(".grade-student-popup").hide();
-  // })
 
   </script>
 

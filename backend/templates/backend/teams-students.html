@@ -79,7 +79,7 @@
 
                   {%if stud.team_id == team.id and stud.is_active == True and stud.user_id == student.id  %}
 
-                  <h3>{{student.name}} | </h3>
+                  <h3>{{ student.name }} {{ student.surname }} | </h3>
                   {% endif%}
 
                 {% endfor %}
@@ -104,11 +104,13 @@
               <div class="col-lg-4 col-md-6">
                 <div class="student-box box">
                   <h2 class="student-name">{{student.name}} {{student.surname}}</h2>
+                  <strong>Email: </strong><h3 class="team">{{student}}</h3><br>
                   {% for team in teams %}
                   {% for stud in students_on_teams %}
                   {% if stud.team_id == team.id and stud.is_active == True and stud.user_id == student.id %}
                     <strong>Team: </strong><h3 class="team">{{team.name}}</h3>
                   {% endif %}
+
 
                   {% endfor %}
                   {% endfor %}
@@ -129,7 +131,7 @@
       <a class="change-password-btn" href="{% url 'change-password' %}">CHANGE PASSWORD</a>
   		<a class="logout-btn" href="{% url 'log_out' %}">LOGOUT</a>
       <a class="courses-btn" href="{% url 'courses' %}">COURSES</a>
-      
+
 </div>
     <div class="create-team-popup popup">
       <div class="content">
@@ -152,13 +154,23 @@
         {% for student in all_students %}
          <option value="{{ student.id }}">{{ student.name }} {{ student.surname }}</option>
          {% endfor %}
-         </select><br>
+         </select>
+         <div id="icon-1" class="select-icon">
+           <svg focusable="false" viewBox="0 0 104 128" width="25" height="35" class="icon">
+             <i class="fas fa-angle-down arrow"></i>
+           </svg>
+           </div><br>
         <!-- <input type="text" name="user" placeholder="Student Name"> -->
         <select id="teams" name="team">
         {% for team in teams %}
          <option value="{{ team.id }}">{{team.name}}</option>
          {% endfor %}
-       </select><br>
+       </select>
+       <div id="icon-2" class="select-icon">
+         <svg focusable="false" viewBox="0 0 104 128" width="25" height="35" class="icon">
+           <i class="fas fa-angle-down arrow"></i>
+         </svg>
+         </div><br>
         <input id="cancel-student" class="cancel-btn btn btn-link" type="button" value="CANCEL">
         <input id="submit-student" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
       </form>

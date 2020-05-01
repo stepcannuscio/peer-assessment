@@ -125,61 +125,8 @@ input[type='range']::-webkit-slider-thumb {
   left: 34%;
 }
 
-/* #cancel-student {
-  position: relative;
-  right: 0;
-  left: %;
-} */
+
 /* Assess Peer Home */
-
-select {
-  width: 50%;
-  height: 50px;
-  font-size: 100%;
-  font-weight: bold;
-  cursor: pointer;
-  border-radius: 0;
-  background-color: #F2F4F4;
-  border: none;
-  border-bottom: 2px solid #6a68f6;
-  color: #6a68f6;
-  padding: 10px;
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  padding: 10px;
-}
-/* For IE <= 11 */
-select::-ms-expand {
-  display: none;
-}
-
-select:hover,
-select:focus {
-  color: #6a68f6;
-  background-color: #F2F4F4;
-  border: 2px solid #6a68f6;
-
-}
-
-.select-icon {
-  position: absolute;
-  left: 65%;
-  top: 42%;
-
-  text-align: center;
-  /* right: 4px; */
-  width: 30px;
-  height: 36px;
-  pointer-events: none;
-  /* border: 2px solid #962d22; */
-  padding-left: 5px;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-.select-icon svg.icon {
-  transition: fill 0.3s ease;
-  fill: white;
-}
 
 .section-header {
   color: #6a68f6;
