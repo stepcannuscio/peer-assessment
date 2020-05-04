@@ -335,6 +335,31 @@ def get_teams(request,course_id):#from instructor's perspective, at this point t
         students = Team_Enrollment.objects.filter(team = team.id)
         team_students.append(students)
 
+def get_students_aggregate(request,course_id,assessment_id): #from instructor's perspective
+    teams = get_teams(request,course_id) #returns a list of team_enrollment objects
+    student_score = {}
+    team_score = {}
+    student_open_ended = {}
+    for team in teams:
+        count = team.aggregate(Count('team_id'))#QuerySet of students count
+        student_count = count['team_id__count'] #num of students
+        current_total = 0 #holds sum of scores
+        for student in team:#student score
+            # s = Answer.objects.filter(student__id = student.id)
+            scores = Answer.objects.filter(student__id = student.user.id,assessment_completion__assessment_id = assessment_id,question__is_open_ended=False, assessment_completion__is_completed = True).aggregate(Avg('score'))# all scores where student_id is
+            #open_ended_answers = Answer.objects.filter(student__id = student.user.id,assessment_completion__assessment_id = assessment_id,question__is_open_ended=True,assessment_completion__is_completed = True)
+            student_score[student.user.id]=scores['score__avg']
+            if(scores['score__avg']!=None):
+                current_total += scores['score_avg']
+            curr_team_id = student.team.id
+        team_score[curr_team_id] = current_total/student_count
+    return student_score, team_score
+#Students can see the aggregate value of their own get_own_results (What other people said about them)
+def get_own_results(request,course_id,assessment_id):
+    current_user = request.user.pk
+    temp = Answer.objects.filter(student__id=current_user,assessment_completion__assessment_id=assessment_id,assessment_completion__is_completed=True,question__is_open_ended=False).aggregate(Avg('score'))
+    avg_question_score = temp.values('question__question,question_id').annotate(average_rating=Avg('score'))
+    return avg_question_score
     #find all teams with the instructor's course_id
 
 
