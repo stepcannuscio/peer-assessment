@@ -4,6 +4,9 @@ from accounts.models import *
 from accounts.helpers import *
 from accounts.forms import *
 
+
+
+
 # HOME PAGE
 def index(request):
     return render(request, 'backend/index.html')
@@ -28,8 +31,10 @@ def student_home(request, course_id):
     course = get_object_or_404(Course, id=course_id)
     total_assessments, completed_assessments, todo_assessments, \
         missed_assessments = get_student_dashboard(request, course)
+    student_grade = get_student_overall_grade(request,course_id)
 
-    return render(request, 'backend/student-home.html', {'course': course,
+
+    return render(request, 'backend/student-home.html', {'course': course,'student_grade':student_grade,
         'total_assessments': total_assessments, 'completed_assessments': completed_assessments,
         'todo_assessments': todo_assessments, 'missed_assessments': missed_assessments})
     args = {'message': storage}
