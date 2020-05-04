@@ -76,15 +76,20 @@
                 <strong>Members: </strong><h3 class="members">
                   {% for stud in students_on_teams %}
                   {% for student in all_students %}
+                  <!-- for team_score -->
 
                   {%if stud.team_id == team.id and stud.is_active == True and stud.user_id == student.id  %}
 
                   <h3>{{ student.name }} {{ student.surname }} | </h3>
-                  {% endif%}
-
+                  {% endif %}
                 {% endfor %}
                 {% endfor %}<br>
-                <strong>Overall Grade: </strong><h3 class="overall-grade">4.3/5</h3>
+                {% for key,val in team_scores.items %}
+                {% if key == team.id %}
+                <strong>Overall Grade: </strong><h3 class="overall-grade">{{val}}</h3>
+                {% endif %}
+                {% endfor %}
+                <!-- #for team_score -->
               </div>
             </div>
               {% endfor %}
@@ -115,7 +120,11 @@
                   {% endfor %}
                   {% endfor %}
                   <br>
-                  <strong>Overall Grade: </strong><h3 class="overall-grade">3.5/5</h3>
+                  {%for key,val in student_scores.items%}
+                  {% if key == student.id%}
+                  <strong>Overall Grade: </strong><h3 class="overall-grade">{{val}}</h3>
+                  {% endif %}
+                  {% endfor %}
                 </div>
               </div>
               {% endfor %}

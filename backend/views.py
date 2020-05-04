@@ -278,14 +278,14 @@ def teams_students(request, course_id):
         student = User.objects.get(pk=stud.user_id)
         if not student.is_staff:
             all_students.append(student)
-
+    student_scores,team_scores = get_students_aggregate(request,course_id = course_id)
     # Load all students on teams
     students_on_teams = []
     for team in teams:
         students = Team_Enrollment.objects.filter(team=team.id)
         students_on_teams += students
 
-    return render(request, 'backend/teams-students.html', {'course': course,
+    return render(request, 'backend/teams-students.html', {'course': course,'student_scores':student_scores, 'team_scores':team_scores,
         'teams': teams, 'students_on_teams': students_on_teams, 'all_students': all_students})
     args = {'message': storage}
 
