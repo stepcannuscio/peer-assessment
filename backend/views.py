@@ -143,38 +143,29 @@ def professor_home(request, course_id):
     storage = messages.get_messages(request)
     course = get_object_or_404(Course, id=course_id)
 
-    return render(request, 'backend/professor-home.html', {'course': course})
+    total_assessments_completed, total_assessments, assessments_to_grade, \
+        assessments_missing = get_professor_dashboard(course)
+
+    print(f'Total Assessments Completed: {total_assessments_completed}')
+    print(f'Total Assessments: {total_assessments}')
+    print(f'Assessments to Grade: {assessments_to_grade}')
+    print(f'Assessments Missing: {assessments_missing}')
+
+    return render(request, 'backend/professor-home.html', {'course': course,
+        'total_assessments_completed': total_assessments_completed, 'total_assessments': total_assessments,
+        'assessments_to_grade': assessments_to_grade, 'assessments_missing': assessments_missing})
     args = {'message': storage}
 
 def all_assessments(request, course_id):
-    current_user = request.user
     storage = messages.get_messages(request)
     course = get_object_or_404(Course, id=course_id)
 
-    assessments_to_grade, teams = get_students_not_graded(current_user, course)
-
-
-    # current_students = Course_Enrollment.objects.filter(course_id=course_id).select_related('user')
-    # students = []
-    # for student in current_students:
-    #     user = User.objects.get(id=student.user.id)
-    #     students.append(user)
+    assessments_to_grade, teams = get_students_not_graded(request.user, course)
     course_assessments = Course_Assessment.objects.filter(course = course).select_related('assessment')
-
-    questions = []
-    for assessment in course_assessments:
-        question = Question_Assessment.objects.filter(assessment=assessment.assessment).select_related('question')
-        questions += question
-    # completed_assessments = []
-    # for assessment in course_assessments:
-    #     # student_assessment = Assessment_Completion.objects.filter(user__in=students, assessment_id=assessment.assessment_id, is_completed=True).select_related('assessment')
-    #     if pytz.utc.localize(datetime.now()) > assessment.assessment.end_date:  # Not past due
-    #         completed_assessments.append(assessment)
-
 
     return render(request, 'backend/all-assessments.html', {'course': course,
         'assessments_to_grade': assessments_to_grade, 'teams': teams,
-        'assessments': course_assessments, 'questions': questions})
+        'assessments': course_assessments})
     args = {'message': storage}
 
 def grade_assessment_home(request, course_id, assessment_completion_id):
@@ -208,8 +199,6 @@ def grade_assessment(request, course_id, assessment_completion_id):
 
 def create_assessment(request, course_id):
     if request.method == 'POST':
-        print(request.POST)
-
         assessment_name = request.POST.getlist('assessment-name')[0]
         start_date = request.POST.getlist('start-date')[0]
         end_date = request.POST.getlist('end-date')[0]
@@ -235,25 +224,16 @@ def view_questions(request, course_id, assessment_id):
 
     current_questions = Question_Assessment.objects.filter(assessment=assessment).select_related('question')
 
-    print(f'All Questions: {all_questions}')
-    print(f'Current Questions: {current_questions}')
-    # course = get_object_or_404(Course, id=course_id)
-    # assessments = Assessment_Completion.objects.filter(id=assessment_completion_id).select_related('user', 'assessment')
-    # assessment = assessments[0]
-    # instructor_assessment = Instructor_Assessment.objects.get(assessment_completion = assessment)
-    #
-    # answers = Answer.objects.filter(user=assessment.user, student=assessment.student, assessment_completion = assessment).select_related('question')
-
     return render(request, 'backend/view-questions.html', {'assessment': assessment,
         'course_id': course_id, 'all_questions': all_questions, 'current_questions': current_questions})
     args = {'message': storage}
 
 def add_question(request, course_id, assessment_id):
     if request.method == 'POST':
-        print(request.POST)
 
         assessment = Peer_Assessment.objects.get(id=assessment_id)
         question_ids = request.POST.getlist('question')
+
         for question_id in question_ids:
             question = Question.objects.get(id=question_id)
             assessment.add(question)
@@ -261,15 +241,16 @@ def add_question(request, course_id, assessment_id):
         new_questions = request.POST.getlist('new-question')
         bools = request.POST.getlist('bool')
 
-        for i in range(len(new_questions)):
-            question = Question(question=new_questions[i], is_open_ended=bools[i])
-            question.save()
-            assessment.add(question)
+        if len(new_questions) >= 1 and new_questions[0] != "":
+
+            for i in range(len(new_questions)):
+                question = Question(question=new_questions[i], is_open_ended=bools[i])
+                question.save()
+                assessment.add(question)
         assessment.is_published = True
         assessment.save()
 
     return redirect('all-assessments', course_id)
-
 
 def create_question(request, course_id):
     if request.method == 'POST':
@@ -277,12 +258,7 @@ def create_question(request, course_id):
 
         question = request.POST.getlist('question')[0]
         is_open_ended = request.POST.getlist('bool')[0]
-        # end_date = request.POST.getlist('end-date')[0]
-        #
-        # question = Question(question=question, is_open_ended=is_open_ended)
-        # question.save()
-        # course = Course.objects.get(id=course_id)
-        # course.add_assessment(assessment)
+
 
     return redirect('all-assessments', course_id)
 
