@@ -60,6 +60,23 @@ def assess_peer_home(request, course_id, assessment_id):
         'students': teammates,'assessment': assessment, 'course': course,
 })
 
+def assess_results(request, course_id, assessment_id):
+    course = get_object_or_404(Course, id=course_id)
+    assessment = get_object_or_404(Peer_Assessment, id=assessment_id)
+#    aggResults = get_own_results(request, course_id=course_id, assessment_id=assessment_id)
+
+    if request.META['HTTP_REFERER'].endswith("completed-assessments"):
+        print('completedddd')
+        current_team = get_current_team(request.user, course)
+        teammates = get_teammates(current_team.team.id, request.user)
+    else:
+        teammates, current_team = get_students_not_assessed(request, course, assessment_id)
+
+    return render(request, 'backend/assess-results.html', { 
+        'students': teammates,'assessment': assessment, 'course': course,
+})
+
+
 def assess_peer(request, course_id, assessment_id):
     student_id = request.POST.get('student')
     student = get_object_or_404(User, id=student_id)

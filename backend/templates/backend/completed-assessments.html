@@ -75,6 +75,9 @@
               {% if assessment in editable_assessments %}
               <p class="edit-text">Click here to edit</p>
               <a class="assessment-link" href="{% url 'assess-peer-home' course.id assessment.id %}"></a>
+              {% else %}
+              <a href= "{% url 'assess-results' course.id assessment.id %}" class="btn btn-primary">Results</a>
+
               {% endif %}
             </div>
           </div>

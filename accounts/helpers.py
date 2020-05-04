@@ -362,6 +362,7 @@ def get_own_results(request,course_id,assessment_id):
     current_user = request.user.pk
     temp = Answer.objects.filter(student__id=current_user,assessment_completion__assessment_id=assessment_id,assessment_completion__is_completed=True,question__is_open_ended=False).aggregate(Avg('score'))
     avg_question_score = temp.values('question__question,question_id').annotate(average_rating=Avg('score'))
+    print(temp)
     return avg_question_score
     #find all teams with the instructor's course_id
 

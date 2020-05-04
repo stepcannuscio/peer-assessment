@@ -12,6 +12,9 @@ urlpatterns = [
     path('<int:course_id>/student-home', views.student_home, name='student-home'),
     path('<int:course_id>/peer-assessments', views.peer_assessments, name='peer-assessments'),
     path('<int:course_id>/peer-assessments/<int:assessment_id>/assess-peer-home', views.assess_peer_home, name="assess-peer-home"),
+    
+    path('<int:course_id>/peer-assessments/<int:assessment_id>/assess-results', views.assess_results, name="assess-results"),
+    
     path('<int:course_id>/peer-assessments/<int:assessment_id>/assess-peer', views.assess_peer, name="assess-peer"),
     path('<int:course_id>/peer-assessments/<int:assessment_id>/save-answer/<int:student_id>', views.save_answer, name="save-answer"),
     path('<int:course_id>/completed-assessments', views.completed_assessments, name='completed-assessments'),
