@@ -85,7 +85,7 @@
       <div class="container-fluid">
         <div id="all-section">
           <h1>All Assessments</h1>
-
+          <button id="edit-btn" type="button" class="btn btn-light create-button">Edit Deadline</button>
           <button type="button" id="create-assessment" class="btn btn-light create-button">CREATE <br />ASSESSMENT</button>
 
 
@@ -93,17 +93,24 @@
           {% for assessment in assessments %}
             <div class="col-lg-6 col-md-6">
               <div class="assessment-box box">
-                <h2 class="assessment-name">{{ assessment.assessment.name }}</h2>
-                <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.assessment.end_date }}</h3>
-                <h3 class="overall"><strong>Class Overall: </strong></h3>
+
+                <!-- <h3 class="overall"><strong>Class Overall: </strong></h3> -->
 
                 {% if assessment.assessment.is_published == False %}
+                  <h2 class="assessment-name">{{ assessment.assessment.name }}</h2>
+                  <strong><h3 class="unpublished">(Unpublished)</h3></strong>
+                  <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.assessment.end_date }}</h3>
                   <p>Click to add questions</p>
                   <a class="assessment-link" href="{% url 'view-questions' course.id assessment.assessment.id %}"></a>
+
                 {% else %}
+                <h2 class="assessment-name">{{ assessment.assessment.name }}</h2>
+                <h3 class="due-date"><strong>Due Date: </strong>{{ assessment.assessment.end_date }}</h3>
+                <p>Click to view results</p>
                 <a class="assessment-link" href="{% url 'teacher-results' course.id assessment.assessment.id %}"></a>
 
                 {% endif %}
+
               </div>
             </div>
             {% endfor %}
@@ -135,6 +142,28 @@
     </div>
   </div>
 
+  <div class="edit-deadline-popup popup">
+    <div class="content">
+      <h3 class="popup-header">Edit Assessment</h3>
+      <p class="popup-subheader">Fill out the following information...</p>
+
+      <form action="{% url 'edit-deadline' course.id %}"method="post">
+        {% csrf_token %}
+        <!-- <input type="text" name="assessment-name" placeholder="Assessment Name">
+        <h4>Start Date: </h4><input type="datetime-local" id="start-date" name="start-date"> -->
+        <select id="assessments" name="assessment">
+
+          {% for assessment in assessments %}
+          <option value="{{ assessment.assessment.id }}">{{ assessment.assessment.name }}</option>
+          {% endfor %}
+        </select>
+        <h4>End Date: </h4><input type="datetime-local" id="end-date" name="end-date"><br>
+        <input id="cancel-deadline" class="cancel-btn btn btn-link" type="button" value="CANCEL">
+        <input id="submit-assessment" class="submit-btn btn btn-link" type="submit" value="SUBMIT">
+      </form>
+    </div>
+  </div>
+
   <script type="text/javascript">
 
 
@@ -153,6 +182,7 @@
   }
 
   $(".create-assessment-popup").hide();
+  $(".edit-deadline-popup").hide();
 
   $("#create-assessment").click(function() {
     $(".overlay").show();
@@ -162,6 +192,17 @@
   $("#cancel-assessment").on("click", function() {
     $(".overlay").hide();
     $(".create-assessment-popup").hide();
+  })
+  $("#cancel-deadline").on("click", function() {
+    $(".overlay").hide();
+    $(".edit-deadline-popup").hide();
+  })
+
+
+  $("#edit-btn").on("click", function() {
+    $(".overlay").show();
+    console.log(this.value)
+    $('.edit-deadline-popup').show()
   })
 
   </script>

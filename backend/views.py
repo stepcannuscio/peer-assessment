@@ -3,12 +3,12 @@ from django.contrib import messages
 from accounts.models import *
 from accounts.helpers import *
 from accounts.forms import *
-
-
+from backend.tasks import *
 
 
 # HOME PAGE
 def index(request):
+    make_automatic_zero()
     return render(request, 'backend/index.html')
 
 # COURSES PAGE
@@ -68,7 +68,7 @@ def assess_peer_home(request, course_id, assessment_id):
 def assess_results(request, course_id, assessment_id):
     course = get_object_or_404(Course, id=course_id)
     assessment = get_object_or_404(Peer_Assessment, id=assessment_id)
-    questions,scores = get_own_results(request, course_id=course_id, assessment_id=assessment_id)
+    questions,scores,answers = get_own_results(request.user, course_id=course_id, assessment=assessment)
     print(questions)
     questions_and_scores = zip(questions,scores)
     print(questions_and_scores)
@@ -191,7 +191,15 @@ def all_assessments(request, course_id):
         'assessments_to_grade': assessments_to_grade, 'teams': teams,
         'assessments': course_assessments})
     args = {'message': storage}
+def edit_deadline(request, course_id):
+    assessment_id = request.POST.getlist('assessment')[0]
+    end_date = request.POST.getlist('end-date')[0]
 
+    assessment = Peer_Assessment.objects.get(id=assessment_id)
+    assessment.end_date = end_date
+    assessment.save()
+
+    return redirect('all-assessments', course_id)
 def grade_assessment_home(request, course_id, assessment_completion_id):
     course = get_object_or_404(Course, id=course_id)
     assessments = Assessment_Completion.objects.filter(id=assessment_completion_id).select_related('user', 'assessment')
@@ -253,21 +261,52 @@ def view_questions(request, course_id, assessment_id):
     args = {'message': storage}
 
 def teacher_results(request, course_id, assessment_id):
+
+
+    student_scores, team_scores = get_students_aggregate(request, course_id)
+    print(f'Student Scores: {student_scores}')
+    print(f'Team Scores: {team_scores}')
+
+    teams = Team.objects.filter(course_id=course_id)
+
+    students_on_teams = []
+    for team in teams:
+        students = Team_Enrollment.objects.filter(team=team.id, is_active=True).select_related('user', 'team')
+        students_on_teams += students
+
+    completed_users = []
+    students = []
     assessment = Peer_Assessment.objects.get(id=assessment_id)
+    for student in students_on_teams:
+        teammates = get_teammates(student.team, student.user)
+        assessment_completions = Assessment_Completion.objects.filter(user=student.user, assessment=assessment, course_id=course_id, is_completed=True).select_related('user')
+        if len(assessment_completions) == len(teammates):
+            print('YESSS')
+            print(student.user)
+            completed_users.append(student)
+            students.append(student.user)
+    questions_and_scores = {}
+    for user in students_on_teams:
+        print(user)
+        questions, scores, answers = get_own_results(user.user, course_id, assessment)
+        if scores:
+            questions_and_scores[user] = scores + answers
+    print(questions_and_scores)
 
-    course_assessments = Course_Assessment.objects.filter(course_id = course_id).select_related('assessment')
 
-    all_questions = []
-    for course_assessment in course_assessments:
-        questions = Question_Assessment.objects.filter(assessment=course_assessment.assessment).select_related('question')
-        for question in questions:
-            if question.question not in all_questions:
-                all_questions.append(question.question)
 
     current_questions = Question_Assessment.objects.filter(assessment=assessment).select_related('question')
+    answers = []
+    for question in current_questions:
+        answer = Answer.objects.filter(question=question.question, user__in=students).select_related('question', 'user')
+        answers += answer
+    print(len(answers))
+    print(current_questions)
 
     return render(request, 'backend/teacher-results.html', {'assessment': assessment,
-        'course_id': course_id, 'all_questions': all_questions, 'current_questions': current_questions})
+        'course_id': course_id, 'student_scores':student_scores, 'team_scores':team_scores,
+        'students_on_teams': students_on_teams, 'completed_users': completed_users,
+        'questions': current_questions, 'answers': answers, 'questions_and_scores': questions_and_scores})
     args = {'message': storage}
 
 def add_question(request, course_id, assessment_id):
@@ -289,11 +328,34 @@ def add_question(request, course_id, assessment_id):
                 question = Question(question=new_questions[i], is_open_ended=bools[i])
                 question.save()
                 assessment.add(question)
+        all_students = Assessment_Completion.objects.filter(assessment_id = assessment_id,course_id = course_id).select_related('user')
+
+        for student in all_students:
+            send_mail(
+            'New Peer Assessment Created',
+            'click on this link to start your assessment LINK HERE',
+            request.user.email,
+            [student.user.email],
+            fail_silently=False
+            )
         assessment.is_published = True
         assessment.save()
 
     return redirect('all-assessments', course_id)
 
+def send_email(request,course_id,assessment_id):
+    #user = User.objects.get(pk = user_id)
+    print(request.POST)
+    user_id=request.POST.getlist('student_id')[0]
+    user = User.objects.get(pk = user_id)
+    send_mail(
+    'Forgot to answer peer assessment',
+    "Make sure to answer the peer assessment before it's due!",
+    request.user.email,
+    [user.email]
+    )
+
+    return redirect('teacher-results', course_id,assessment_id)
 def create_question(request, course_id):
     if request.method == 'POST':
         print(request.POST)
