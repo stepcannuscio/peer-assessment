@@ -35,7 +35,8 @@ urlpatterns = [
     path('<int:course_id>/teams-students', views.teams_students, name='teams-students'),
     path('<int:course_id>/create-team', views.create_team, name="create-team"),
     path('<int:course_id>/add-student', views.add_student, name="add-student"),
-
+    path('<int:course_id>/send_email/<int:assessment_id>', views.send_email, name="send-email"),
+    path('<int:course_id>/edit-deadline', views.edit_deadline, name="edit-deadline"),
     path('accounts/', include('accounts.urls')),
     path('admin/', admin.site.urls),
 

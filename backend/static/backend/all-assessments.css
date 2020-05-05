@@ -21,6 +21,7 @@ h3 {
 p {
   font-size: 13px;
   margin-bottom: 0;
+  color: blue;
 }
 
 .box {
@@ -72,4 +73,9 @@ input[type="text"] {
   #create-assessment {
     left: 30%;
   }
+}
+
+.unpublished {
+  color: red;
+  font-weight: 600;
 }

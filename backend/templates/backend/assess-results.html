@@ -44,26 +44,17 @@
 
 
 
-		<form action="{% url 'assess-peer' course.id assessment.id %}" method="post">
+
 
 		{% for question,score in questions_and_scores %}
 		<ol>
-			<li align="left">{{question}} <b>	{{score}}</b></li>
+			<li value = {{forloop.counter}} align="left">{{question}} <b>	{{score}}</b></li>
 
 
 		</ol>
 		{% endfor %}
-			{% csrf_token %}
 
 
-				<ol>
-					<li align="left"> 				</li>
-
-				</ol>
-
-
-
-		</form>
 
 
 	</div>

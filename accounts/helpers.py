@@ -51,7 +51,7 @@ import pytz
 from collections import OrderedDict
 from django.db.models import Avg,Count
 from django.template.defaulttags import register
-
+from django.core.mail import send_mail
 
 
 
@@ -354,18 +354,21 @@ def get_students_aggregate(request,course_id): #from instructor's perspective
             # s = Answer.objects.filter(student__id = student.id)
             scores = Answer.objects.filter(student__id = student.user.id,question__is_open_ended=False, assessment_completion__is_completed = True).aggregate(Avg('score'))# all scores where student_id is
             #open_ended_answers = Answer.objects.filter(student__id = student.user.id,assessment_completion__assessment_id = assessment_id,question__is_open_ended=True,assessment_completion__is_completed = True)
-            student_score[student.user.id]=scores['score__avg']
-            if(scores['score__avg']!=None):
-                current_total += scores['score__avg']
-            curr_team_id = student.team.id
-        if(student_count!=0):
-            team_score[curr_team_id] = current_total/student_count
+            score = scores['score__avg']
+            if score != None:
+                print('not none')
+                student_score[student.user] = score
+                current_total += score
+            else:
+                student_score[student.user] = ""
+            curr_team_id=student.team
+            if(student_count!=0):
+                team_score[curr_team_id] = current_total/student_count
     return student_score, team_score
 
 #Students can see the aggregate value of their own get_own_results (What other people said about them)
-def get_own_results(request,course_id,assessment_id):
-    current_user = request.user.pk
-    temp = Answer.objects.filter(student__id=current_user,assessment_completion__assessment_id=assessment_id,assessment_completion__is_completed=True,question__is_open_ended=False)
+def get_own_results(current_user,course_id,assessment):
+    temp = Answer.objects.filter(student=current_user,assessment_completion__assessment=assessment,assessment_completion__is_completed=True,question__is_open_ended=False)
     avg_question_score = temp.values('question__question').annotate(average_rating=Avg('score'))
     questions = []
     scores = []
@@ -375,13 +378,22 @@ def get_own_results(request,course_id,assessment_id):
                 questions.append(val)
             if(key == 'average_rating'):
                 scores.append(val)
-    return questions,scores
+    answer_objs = Answer.objects.filter(student=current_user,assessment_completion__assessment=assessment, assessment_completion__is_completed=True, question__is_open_ended=True)
+    answers = []
+    for answer in answer_objs:
+        answers.append(answer.answer)
+        print(f'Answers: {answers}')
+    return questions,scores,answers
 def get_student_overall_grade(request,course_id):#grab the grade the teacher gives student
     current_user = request.user.pk
     grades = Instructor_Assessment.objects.filter(assessment_completion__student_id = current_user,is_graded=True,assessment_completion__course_id=course_id)
     avg_grades = grades.aggregate(Avg('grade'))
-    return avg_grades['grade__avg']
+    if(avg_grades['grade__avg']== None):
+        return "N/A"
+    else:
+        return avg_grades['grade__avg']
     #find all teams with the instructor's course_id
+# def send_reminder(request,course_id):
 
 
 

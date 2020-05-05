@@ -25,8 +25,153 @@
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 
-  <script>
 
+</head>
+
+<body>
+
+  <div class="assessment-popup popup border-shadow">
+    <!-- <button type="button" class="btn btn-primary btn-sm pull-right">Publish Results</button> -->
+    <h3 class="popup-header">{{ assessment }} Results</h3
+
+
+    <hr>
+
+
+
+
+    <h2><b>Team Results</b></h2>
+
+
+    <div class="table-Teams">
+ <table class="table">
+   <thead>
+     <tr>
+
+       <th>Team</th>
+       <th>Avg. Score</th>
+
+     </tr>
+   </thead>
+   <tbody>
+     {% for team, score in team_scores.items %}
+     <tr>
+
+       <td>{{ team }}</td>
+       <td> {{ score }}</td>
+
+    </tr>
+    {% endfor %}
+
+   <tr>
+     <td><br/></td>
+     <td><br/></td>
+  </tr>
+
+
+   </tbody>
+ </table>
+
+ </div>
+<p>
+
+
+  <h2><b>Student Results</b></h2>
+ <div class="table-Teams">
+<table class="table">
+<thead>
+  <tr>
+    <th>Team Name</th>
+    <th>Student Name</th>
+    <th>Avg. Score</th>
+    <th>Completed Assessment</th>
+
+  </tr>
+</thead>
+<tbody>
+
+    {% for student, score in student_scores.items %}
+
+
+    <tr>
+      {% for stud in students_on_teams %}
+      {% if stud.user.id == student.id %}
+      <td>{{ stud.team }}</td>
+      <td>{{ student.name }} {{ student.surname }}</td>
+      <td> {{ score }}</td>
+      {% endif %}
+       {% endfor %}
+
+       {% if student in completed_users%}
+          <td>Complete</td>
+          {% else %}
+             <form action="{% url 'send-email' course_id assessment.id %}" method="post">
+             {%csrf_token%}
+              <input id="student-id" hidden type = "text" name = "student_id" value ="{{student.id}}">
+             <td>Incomplete <input id="submit-btn" type="submit" value="Send Alert"></td>
+             {% endif %}
+             </form>
+   </tr>
+
+   {% endfor %}
+
+
+</tbody>
+</table>
+</div>
+
+<p>
+<hr>
+
+  <h2><b>Detailed Results</b></h2>
+ <div class="table-Teams">
+<table hidden class="table">
+<thead>
+  <tr >
+
+    <th>Team</th>
+    <th>Student Name</th>
+    {% for question in questions %}
+    <th>{{ question.question.question }}</th>
+    {% endfor %}
+
+
+  </tr>
+</thead>
+<tbody>
+  {% for enrollment_obj, questions in questions_and_scores.items %}
+  <tr>
+    <td>{{ enrollment_obj.team.name }}</td>
+    <td>{{enrollment_obj.user.name }} {{enrollment_obj.user.surname}}</td>
+    {% for question in questions %}
+
+
+
+    <td>{{question}}</td>
+
+    {%endfor%}
+
+
+
+
+ </tr>
+ {%endfor%}
+
+</tbody>
+</table>
+<button onclick="exportTableToCSV('{{ assessment }} Detailed Report.csv')">Download Detailed Results</button>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+  <script>
   function myFunction() {
     alert("Reminder email sent!");
   }
@@ -64,147 +209,19 @@ function exportTableToCSV(filename) {
     for (var i = 0; i < rows.length; i++) {
         var row = [], cols = rows[i].querySelectorAll("td, th");
 
+
         for (var j = 0; j < cols.length; j++)
             row.push(cols[j].innerText);
+            console.log(j)
 
         csv.push(row.join(","));
+
     }
 
     // Download CSV file
     downloadCSV(csv.join("\n"), filename);
 }
   </script>
-
-
-</head>
-
-<body>
-
-  <div class="assessment-popup popup border-shadow">
-    <button type="button" class="btn btn-primary btn-sm pull-right">Publish Results</button>
-    <h3 class="popup-header">{{ assessment }} Results</h3
-
-
-    <hr>
-
-
-
-
-    <h2><b>Team Results</b></h2>
-
-
-    <div class="table-Teams">
- <table class="table">
-   <thead>
-     <tr>
-       <th>Team</th>
-       <th>Avg. Score</th>
-
-     </tr>
-   </thead>
-   <tbody>
-     <tr>
-       <td>SeaQwells</td>
-       <td>9.5</td>
-    </tr>
-    <tr>
-      <td>Team 2</td>
-      <td>8.5</td>
-   </tr>
-   <tr>
-     <td><br/></td>
-     <td><br/></td>
-  </tr>
-
-
-   </tbody>
- </table>
- <!-- <button onclick="exportTableToCSV('{{ assessment }}.csv')">Download Team Results</button> -->
- </div>
-<p>
-
-
-  <h2><b>Student Results</b></h2>
- <div class="table-Teams">
-<table class="table">
-<thead>
-  <tr>
-    <th>Team</th>
-    <th>Student Name</th>
-    <th>Avg. Score</th>
-    <th>Completed Assessment</th>
-
-  </tr>
-</thead>
-<tbody>
-  <tr>
-    <td>SeaQwells</td>
-    <td>Bob Jones</td>
-    <td>9</td>
-    <td>Incomplete <button onclick="myFunction()">  🔔</button></td>
- </tr>
- <tr>
-   <td>Team 2</td>
-   <td>Joe Smith</td>
-   <td>8.5</td>
-   <td>Complete</td>
-</tr>
-<tr>
-  <td><br/></td>
-  <td><br/></td>
-  <td><br/></td>
-  <td><br/></td>
-</tr>
-
-
-</tbody>
-</table>
-</div>
-
-<p>
-<hr>
-
-  <h2><b>Detailed Results</b></h2>
- <div class="table-Teams">
-<table  class="table">
-<thead>
-  <tr >
-    <th>Team</th>
-    <th>Student Name</th>
-    {% csrf_token %}
-    {% for question in current_questions %}
-    <th>{{ question.question.question }}</th>
-    {% endfor %}
-
-
-  </tr>
-</thead>
-<tbody>
-  <tr>
-
-    <td>SeaQwells</td>
-    <td>Bob Jones</td>
-
-
-    <td>Answer1</td>
-    <td>Answer2</td>
-    <td>Answer3</td>
-    <td>Answer4</td>
- </tr>
-
-</tbody>
-</table>
-<button onclick="exportTableToCSV('{{ assessment }} Detailed Report.csv')">Download Detailed Results</button>
-
-
-</div>
-
-</div>
-
-
-
-
-
 
 </body>
 
