@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title>Add Question</title>
+
+  {% load static %}
+
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans:300,400,500&display=swap" rel="stylesheet">
+
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'backend/globals.css' %}">
+  <link rel="stylesheet" href="{% static 'backend/assess-peer.css' %}">
+
+
+  <!-- Font Awesome -->
+  <script src="https://use.fontawesome.com/releases/v5.13.0/js/all.js"></script>
+
+  <!-- Bootstrap Scripts -->
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  <script>
+
+  function myFunction() {
+    alert("Reminder email sent!");
+  }
+
+  function downloadCSV(csv, filename) {
+    var csvFile;
+    var downloadLink;
+
+    // CSV file
+    csvFile = new Blob([csv], {type: "text/csv"});
+
+    // Download link
+    downloadLink = document.createElement("a");
+
+    // File name
+    downloadLink.download = filename;
+
+    // Create a link to the file
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+
+    // Hide download link
+    downloadLink.style.display = "none";
+
+    // Add the link to DOM
+    document.body.appendChild(downloadLink);
+
+    // Click download link
+    downloadLink.click();
+}
+
+function exportTableToCSV(filename) {
+    var csv = [];
+    var rows = document.querySelectorAll("table tr");
+
+    for (var i = 0; i < rows.length; i++) {
+        var row = [], cols = rows[i].querySelectorAll("td, th");
+
+        for (var j = 0; j < cols.length; j++)
+            row.push(cols[j].innerText);
+
+        csv.push(row.join(","));
+    }
+
+    // Download CSV file
+    downloadCSV(csv.join("\n"), filename);
+}
+  </script>
+
+
+</head>
+
+<body>
+
+  <div class="assessment-popup popup border-shadow">
+    <button type="button" class="btn btn-primary btn-sm pull-right">Publish Results</button>
+    <h3 class="popup-header">{{ assessment }} Results</h3
+
+
+    <hr>
+
+
+
+
+    <h2><b>Team Results</b></h2>
+
+
+    <div class="table-Teams">
+ <table class="table">
+   <thead>
+     <tr>
+       <th>Team</th>
+       <th>Avg. Score</th>
+
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td>SeaQwells</td>
+       <td>9.5</td>
+    </tr>
+    <tr>
+      <td>Team 2</td>
+      <td>8.5</td>
+   </tr>
+   <tr>
+     <td><br/></td>
+     <td><br/></td>
+  </tr>
+
+
+   </tbody>
+ </table>
+ <!-- <button onclick="exportTableToCSV('{{ assessment }}.csv')">Download Team Results</button> -->
+ </div>
+<p>
+
+
+  <h2><b>Student Results</b></h2>
+ <div class="table-Teams">
+<table class="table">
+<thead>
+  <tr>
+    <th>Team</th>
+    <th>Student Name</th>
+    <th>Avg. Score</th>
+    <th>Completed Assessment</th>
+
+  </tr>
+</thead>
+<tbody>
+  <tr>
+    <td>SeaQwells</td>
+    <td>Bob Jones</td>
+    <td>9</td>
+    <td>Incomplete <button onclick="myFunction()">  🔔</button></td>
+ </tr>
+ <tr>
+   <td>Team 2</td>
+   <td>Joe Smith</td>
+   <td>8.5</td>
+   <td>Complete</td>
+</tr>
+<tr>
+  <td><br/></td>
+  <td><br/></td>
+  <td><br/></td>
+  <td><br/></td>
+</tr>
+
+
+</tbody>
+</table>
+</div>
+
+<p>
+<hr>
+
+  <h2><b>Detailed Results</b></h2>
+ <div class="table-Teams">
+<table  class="table">
+<thead>
+  <tr >
+    <th>Team</th>
+    <th>Student Name</th>
+    {% csrf_token %}
+    {% for question in current_questions %}
+    <th>{{ question.question.question }}</th>
+    {% endfor %}
+
+
+  </tr>
+</thead>
+<tbody>
+  <tr>
+
+    <td>SeaQwells</td>
+    <td>Bob Jones</td>
+
+
+    <td>Answer1</td>
+    <td>Answer2</td>
+    <td>Answer3</td>
+    <td>Answer4</td>
+ </tr>
+
+</tbody>
+</table>
+<button onclick="exportTableToCSV('{{ assessment }} Detailed Report.csv')">Download Detailed Results</button>
+
+
+</div>
+
+</div>
+
+
+
+
+
+
+</body>
+
+</html>

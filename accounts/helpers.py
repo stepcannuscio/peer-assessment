@@ -365,14 +365,22 @@ def get_students_aggregate(request,course_id): #from instructor's perspective
 #Students can see the aggregate value of their own get_own_results (What other people said about them)
 def get_own_results(request,course_id,assessment_id):
     current_user = request.user.pk
-    temp = Answer.objects.filter(student__id=current_user,assessment_completion__assessment_id=assessment_id,assessment_completion__is_completed=True,question__is_open_ended=False).aggregate(Avg('score'))
-    avg_question_score = temp.values('question__question,question_id').annotate(average_rating=Avg('score'))
-    return avg_question_score
+    temp = Answer.objects.filter(student__id=current_user,assessment_completion__assessment_id=assessment_id,assessment_completion__is_completed=True,question__is_open_ended=False)
+    avg_question_score = temp.values('question__question').annotate(average_rating=Avg('score'))
+    questions = []
+    scores = []
+    for question in avg_question_score:
+        for key,val in question.items():
+            if(key == 'question__question'):
+                questions.append(val)
+            if(key == 'average_rating'):
+                scores.append(val)
+    return questions,scores
 def get_student_overall_grade(request,course_id):#grab the grade the teacher gives student
     current_user = request.user.pk
     grades = Instructor_Assessment.objects.filter(assessment_completion__student_id = current_user,is_graded=True,assessment_completion__course_id=course_id)
     avg_grades = grades.aggregate(Avg('grade'))
-    return avg_grades['grade__avg'] 
+    return avg_grades['grade__avg']
     #find all teams with the instructor's course_id
 
 
