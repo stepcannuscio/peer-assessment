@@ -45,24 +45,24 @@
 
 
 		<form action="{% url 'assess-peer' course.id assessment.id %}" method="post">
+
+		{% for question,score in questions_and_scores %}
 		<ol>
-			<li align="left">He/She adequately fulfills the assigned tasks: <b>8.1 avg</b></li>
-			
-	
-		</ol> 
+			<li align="left">{{question}} <b>	{{score}}</b></li>
 
+
+		</ol>
+		{% endfor %}
 			{% csrf_token %}
-			
 
-				{% for question in avg_question_score %}
-				
+
 				<ol>
-					<li align="left"> 						</li>
-			
-				</ol> 
-				
-				{% endfor %}
-			
+					<li align="left"> 				</li>
+
+				</ol>
+
+
+
 		</form>
 
 
@@ -73,4 +73,3 @@
 
 
 </html>
-

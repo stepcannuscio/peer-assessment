@@ -63,8 +63,10 @@ def assess_peer_home(request, course_id, assessment_id):
 def assess_results(request, course_id, assessment_id):
     course = get_object_or_404(Course, id=course_id)
     assessment = get_object_or_404(Peer_Assessment, id=assessment_id)
-#    aggResults = get_own_results(request, course_id=course_id, assessment_id=assessment_id)
-
+    questions,scores = get_own_results(request, course_id=course_id, assessment_id=assessment_id)
+    print(questions)
+    questions_and_scores = zip(questions,scores)
+    print(questions_and_scores)
     if request.META['HTTP_REFERER'].endswith("completed-assessments"):
         print('completedddd')
         current_team = get_current_team(request.user, course)
@@ -72,7 +74,7 @@ def assess_results(request, course_id, assessment_id):
     else:
         teammates, current_team = get_students_not_assessed(request, course, assessment_id)
 
-    return render(request, 'backend/assess-results.html', { 
+    return render(request, 'backend/assess-results.html', { 'questions_and_scores':questions_and_scores,
         'students': teammates,'assessment': assessment, 'course': course,
 })
 
@@ -242,6 +244,24 @@ def view_questions(request, course_id, assessment_id):
     current_questions = Question_Assessment.objects.filter(assessment=assessment).select_related('question')
 
     return render(request, 'backend/view-questions.html', {'assessment': assessment,
+        'course_id': course_id, 'all_questions': all_questions, 'current_questions': current_questions})
+    args = {'message': storage}
+
+def teacher_results(request, course_id, assessment_id):
+    assessment = Peer_Assessment.objects.get(id=assessment_id)
+
+    course_assessments = Course_Assessment.objects.filter(course_id = course_id).select_related('assessment')
+
+    all_questions = []
+    for course_assessment in course_assessments:
+        questions = Question_Assessment.objects.filter(assessment=course_assessment.assessment).select_related('question')
+        for question in questions:
+            if question.question not in all_questions:
+                all_questions.append(question.question)
+
+    current_questions = Question_Assessment.objects.filter(assessment=assessment).select_related('question')
+
+    return render(request, 'backend/teacher-results.html', {'assessment': assessment,
         'course_id': course_id, 'all_questions': all_questions, 'current_questions': current_questions})
     args = {'message': storage}
 

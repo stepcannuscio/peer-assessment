@@ -94,6 +94,19 @@ class Team(models.Model): #each team can be of 2 or more students
     def add(self,user):
         Team_Enrollment(user=user,team = self).save()
 
+        teammates = Team_Enrollment.objects.filter(team=self).exclude(user=user).select_related('user')
+        assessments = Course_Assessment.objects.filter(course=self.course).select_related('assessment')
+        for mate in teammates:
+            for assessment in assessments:
+                try:
+                    Assessment_Completion(user=mate.user,assessment=assessment.assessment,student=user,course = self.course).save()
+                except:
+                    print('failed1')
+                try:
+                    Assessment_Completion(user=user,assessment=assessment.assessment,student=mate.user,course = self.course).save()
+                except:
+                    pass
+
     def __str__(self):
         return self.name
 
