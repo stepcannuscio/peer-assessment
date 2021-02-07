@@ -7,7 +7,7 @@ from datetime import datetime
 from pytz import timezone
 
 @background(schedule=60) #sends an email to students who
-## assessment_completion__is
+
 def make_automatic_zero():
     incomplete_assessments = Assessment_Completion.objects.filter(is_completed=False)
     past_due_assessments = [] #past due and incomplete

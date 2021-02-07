@@ -22,7 +22,6 @@ def courses(request):
     return render(request, 'backend/courses.html', {'courses': courses})
 
 """ STUDENT PAGES """
-
 def student_login(request):
     return render(request, 'backend/student-login.html')
 

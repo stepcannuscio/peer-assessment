@@ -61,5 +61,3 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.register(User,UserAdmin)
 admin.site.unregister(Group)
-
-# Register your models here.

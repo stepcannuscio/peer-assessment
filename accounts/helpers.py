@@ -113,23 +113,16 @@ def get_professor_dashboard(course):
         try:
             instructor_assessment = Instructor_Assessment.objects.get(assessment_completion = assessment)
             if instructor_assessment.is_graded != True: # not graded
-                # assessments_to_grade.append(assessment)
                 assessments_to_grade += 1
         except:
-            # assessments_to_grade.append(assessment)
             assessments_to_grade += 1
 
     assessments_missing = 0
-    # dup_assessments = []
-
     incomplete_assessments = get_course_assessments(course, is_completed=False)
 
     for assessment in incomplete_assessments:
         if pytz.utc.localize(datetime.now()) > assessment.assessment.end_date: # Past due
-            print(assessment)
-            # if assessment.assessment not in dup_assessments:
             assessments_missing += 1
-                # dup_assessments.append(assessment.assessment)
 
     print(f'Total Assessments Completed: {total_assessments_completed}')
     print(f'Total Assessments: {total_assessments}')
@@ -153,18 +146,7 @@ def get_professor_dashboard(course):
     # 3) loop through the past due assessments to get their corresponding assessment_completions
     #    to see if they are completed --> if not completed, then assessments missing is +1
 
-    # students = Course_Enrollment.objects.filter(course=course).select_related('user')
-    #
-    #
-    # completed_assessments, assessments_length = get_complete_assessments(assessment_completions, students)
-    # todo_assessments, missed_assessments = get_incomplete_assessments(assessment_completions)
-
-
     return total_assessments_completed, total_assessments, assessments_to_grade, assessments_missing
-
-
-
-
 
 def get_peer_assessments(request, course, completed=False, team_info=False):
     current_team = get_current_team(request.user, course)
@@ -302,17 +284,6 @@ def get_questions(assessment_id):
 
     return not_open_ended, open_ended
 
-
-
-
-
-# @background(schedule = 60)
-# def generate_results(request):
-#     current_user = request.user.pk
-#     user_assessments = Assessment_Completion.objects.filter(user_id=current_user)
-
-
-
 #Function that gets all teams and students within a course(instructor perspective)
 def get_all_courses(request): #maybe modify this so you can get current vs previous classes
     current_user = request.user.pk
@@ -332,6 +303,7 @@ def get_students(request): #This would only be called once you know which course
         if(student.user.is_staff==False):
             students.append(student)
     return students
+
 def get_teams(request,course_id):#from instructor's perspective, at this point the course you are in is already known. Just need to populate the teams
     current_instructor = request.user.pk
     current_teams = Team.objects.filter(course_id = course_id)
@@ -384,6 +356,7 @@ def get_own_results(current_user,course_id,assessment):
         answers.append(answer.answer)
         print(f'Answers: {answers}')
     return questions,scores,answers
+
 def get_student_overall_grade(request,course_id):#grab the grade the teacher gives student
     current_user = request.user.pk
     grades = Instructor_Assessment.objects.filter(assessment_completion__student_id = current_user,is_graded=True,assessment_completion__course_id=course_id)
@@ -392,45 +365,3 @@ def get_student_overall_grade(request,course_id):#grab the grade the teacher giv
         return "N/A"
     else:
         return avg_grades['grade__avg']
-    #find all teams with the instructor's course_id
-# def send_reminder(request,course_id):
-
-
-
-#     instructor_c = team.objects.filter(user = current_instructor).select_related('course')
-
-#from studnet perspective, student should be able to change answer after assessment complete (function that allows them to update their answers )
-
-#click on an assessment, and it gives you all questions for that assessment
-
-#function that gives overall score to student.
-
-#helper function to get the assessments that instructor has graded
-
-#function that gets the assessments that need to be graded from the instructor side
-
-#function that gets the students who did not finish the assessment (from the instructor side)
-
-#function that populates team they're in, assessment it's for .
-#Once they click on it, it shows that Question, and relative scores and answers.
-
-#In All Assessments
-
-
-# Once someone clicks on an assessment, show all the teams for that assessment, click on a team and show all students in the team and whether or not
-# it has been completed
-
-
-#download function that gives the average score for each person in a team, and also shows the open ended answers
-
-#function that changes from unpublished to published
-
-
-
-
-
-#function that populates unpublished assessments
-
-
-
-#helper function to get the user's aggregate score.
